@@ -10,26 +10,6 @@ import {deepClone} from "./tools.mjs";
 const controllers = {complaintController, mainController, systemController, usersController, notificationController},
     controllerList = Object.values(controllers);
 
-export const controllersWatch = (context, users, event) => {
-    if(config.mysqlWatch.includeTable && !(config.mysqlWatch?.includeTable || []).includes(event.table) ||
-        (config?.mysqlWatch?.excludeTable || []).includes(event.table)
-    ){
-        return false;
-    }
-    context().config.isLog && context().notice(event);
-
-    if(event.timestamp === context().data.watchLast[event.table]) return 0;
-    context().data.watchLast[event.table] = event.timestamp;
-
-    Object.keys(users).forEach(name => {
-        let $context = context(name);
-        for(const controller of controllerList){
-            controller?.watchMysql?.($context, event)
-        }
-       $context = null;
-    });
-
-}
 
 export const controllersInit = context => {
     for(const controller of controllerList){
@@ -47,18 +27,6 @@ export const controllersOn = (context, message) => {
     if(name === 'set'){
         context.store = Object.assign(context.store, data);
 
-        if(context.data.usersWatcher.online.size){
-            let usersStore = [];
-            for(const token in context.users){
-                usersStore.push(usersController.__formatUser(deepClone(context.users[token].store), token, context.users[token].date));
-            }
-
-            context.data.usersWatcher.online.forEach(token =>{
-                context.global(token).emit('changeUsers', usersStore);
-
-            });
-            usersStore = null;
-        }
         return true;
     }
 
@@ -68,6 +36,9 @@ export const controllersOn = (context, message) => {
         dataId = data.id;
         data = data.data;
         isCommand = true;
+    }
+    if(name === 'req'){
+       console.log(data);
     }
 
 
