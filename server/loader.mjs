@@ -1,13 +1,9 @@
-import config from "./config.mjs";
-import complaintController from './controllers/complaint.mjs';
 import mainController from './controllers/main.mjs';
 import systemController from './controllers/system.mjs';
 import usersController from './controllers/users.mjs';
-import notificationController from './controllers/notification.mjs';
-import {deepClone} from "./tools.mjs";
 
 
-const controllers = {complaintController, mainController, systemController, usersController, notificationController},
+const controllers = {mainController, systemController, usersController},
     controllerList = Object.values(controllers);
 
 
