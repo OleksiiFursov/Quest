@@ -25,6 +25,7 @@ const _DATA = {
         startDate: new Date().valueOf(),
         all: {},
     },
+    errors: [],
     usersDisconnect: new Map()
 };
 
@@ -42,8 +43,8 @@ const context = token => ({
     wssConnect: token ? _USERS[token].wss : null,
     store: token ? _USERS[token].store : null,
     all,
-    _DATA,
-    _USERS,
+    data: _DATA,
+    users: _USERS,
     config: currentConfig,
     emit(name, data = null, allUsers = false) {
         if (!token || allUsers) {
