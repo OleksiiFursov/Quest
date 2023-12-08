@@ -15,13 +15,6 @@ export default {
     getNodeVersion() {
         return process.versions;
     },
-    setWatcher(context, name) {
-        if(typeof context.data.usersWatcher[name] === 'undefined'){
-            context.data.usersWatcher[name] = new Set();
-        }
-        context.data.usersWatcher[name].add(context.token);
-        return true;
-    },
     setUsersLog(context, data) {
         const name = data['name'] || 'all';
         context.data.usersLogs[name].push(
@@ -43,17 +36,6 @@ export default {
         }else{
             return context.data.usersLogs;
         }
-    },
-    removeWatcher(context, name) {
-
-        if(name)
-            return context.data.usersWatcher[name].delete(context.token);
-        else{
-            for(let watchName in context.data.usersWatcher){
-                context.data.usersWatcher[watchName].delete(context.token)
-            }
-        }
-        return true;
     },
     getMemory(context) {
         return context.emit('system.memory', this.__formatMemory());
@@ -112,35 +94,6 @@ export default {
     },
     getFrontVersion(context) {
         return context.data.frontVersion;
-    },
-
-    setFrontVersion(context, data) {
-        if(!context.data.frontVersionHistory.has(data)){
-            context.data.frontVersion = data;
-            context.data.frontVersionHistory.set(data, formatDate());
-            if(context.config.checkFrontVersion)
-                this.checkFrontVersion(context, data);
-        }
-        context.emit('system.version', context.data.frontVersion, true);
-    },
-    checkFrontVersion(context, data) {
-        if(!data){
-            data = context.data.frontVersion;
-        }
-        if(context.data.frontVersionHistory.size > 1){
-            for(let token in context.users){
-                const _store = context.users[token].store;
-                if(_store.frontVersion !== data){
-                    this.setSystemMessage(context, {
-                        type: 'warning',
-                        message: _store.lang === 'pl' ?
-                            'Pojawiła się nowsza wersja panelu. Wyloguj się i odśwież stronę lub wyczyść pamięć podręczną aby korzystać z najnowszej wersji.' :
-                            'New panel version is ready. Logout and refresh page or clear browser cache to use the new version.'
-                    })
-                }
-            }
-        }
-        return true;
     },
     setConfig(context, data) {
         context.config = merge(context.config, data);

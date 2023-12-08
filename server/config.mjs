@@ -6,5 +6,11 @@ export default merge({
     isLog: true,
     port: 9999,
     isSSL: false,
+    db: {
+        host: '31.131.24.159',
+        username: 'crossfox_photoQuest_root',
+        password: '5Jc0gpYa&i',
+        name:  'crossfox_photoQuest'
+    }
 
 }, configLocal)
