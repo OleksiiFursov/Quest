@@ -2,7 +2,7 @@ import {render} from 'preact'
 import {App} from './app.jsx'
 
 import {configureStore} from '@reduxjs/toolkit'
-import createRouter from "./core/Router/index.js";
+import createRouter from "./core/Router/index.jsx";
 import reducerMain from "./main/reducer.js";
 import {Provider} from 'react-redux';
 import AccountLoginPage from "./page/Account/index.jsx";
