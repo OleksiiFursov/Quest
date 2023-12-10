@@ -34,21 +34,6 @@ const storeInit = () => ({
 
 const all = callback => Object.values(_USERS).forEach(callback)
 
-import { drizzle } from "drizzle-orm/mysql2";
-import mysql from "mysql2/promise";
-
-// create the connection
-const connection = mysql.createPool({
-  host: config.db.host,
-  username: config.db.username,
-  password: config.db.password,
-  database: config.db.name
-});
-
-const db = drizzle(connection);
-
-
-console.log(db);
 
 const context = nToken => ({
   nToken,
