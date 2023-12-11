@@ -4,6 +4,8 @@ import config from './config.mjs'
 import { nanoid } from 'nanoid'
 import { controllersInit, controllersOn } from './loader.mjs'
 import { deepClone, formatDate } from './tools.mjs'
+import db from './db.js';
+
 
 let options = {}
 if (config.isSSL) {
@@ -40,6 +42,7 @@ const context = nToken => ({
   wssConnect: nToken ? _USERS[nToken].wss : null,
   store: nToken ? _USERS[nToken].store : null,
   all,
+  db,
   data: _DATA,
   users: _USERS,
   config: deepClone(config),
