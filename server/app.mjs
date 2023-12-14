@@ -4,7 +4,7 @@ import config from './config.mjs'
 import { nanoid } from 'nanoid'
 import { controllersInit, controllersOn } from './loader.mjs'
 import { deepClone, formatDate } from './tools.mjs'
-import db from './db.js';
+import db from './db.mjs';
 
 
 let options = {}
