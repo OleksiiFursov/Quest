@@ -15,6 +15,7 @@ const operatorAlias = {
     NNULL: 'NOT NULL',
 }
 
+const historySQL = [];
 class QueryBuilder {
     constructor() {
         this.column = []
@@ -24,12 +25,20 @@ class QueryBuilder {
         this._limit = null;
         this._offset = null;
         this._order = [];
+        this.safe = true;
+        this.safeWhere = [];
     }
 
     #err(msg) {
         throw new Error(msg + JSON.stringify(this))
     }
 
+    getLast(){
+        return historySQL.at(-1) || null;
+    }
+    getHistory(){
+        return historySQL;
+    }
 
     select(...columns) {
         this.column = columns
@@ -85,7 +94,7 @@ class QueryBuilder {
         let res = ''
         for (const key in conditions) {
             if (key === 'and' || key === 'or') {
-                res += ' ' + operatorJoin + ' ' + conditions[key].map(v => '(' + this.generateWhereItem(v) + ')').join(' ' + key.toUpperCase()+' ');
+                res += (res.at(-1) === ' ' ? '' : ' ') + operatorJoin + ' ' + conditions[key].map(v => '(' + this.generateWhereItem(v) + ')').join(' ' + key.toUpperCase() + ' ');
                 continue;
             }
             let value = conditions[key]
@@ -98,19 +107,27 @@ class QueryBuilder {
                 } else {
                     const keys = Object.keys(value);
 
-                    operator = keys[0] !== '0' ? keys[0].toUpperCase() : null;
-                    if (operatorAlias[operator])
-                        operator = operatorAlias[operator]
+                    operator = keys[0] !== '0' ? operatorAlias[keys[0].toUpperCase()] || keys[0].toUpperCase() : null;
 
                     if (Array.isArray(value) || operator === 'IN' || operator === 'NOT IN') {
                         operator = operator || 'IN';
                         value = '(' + value.map(cur => this.#addQuoteIfNeeded(cur)).join(', ') + ')'
-                    } else if (operator === 'LIKE' || operator=== 'NOT LIKE') {
+                    } else if (operator === 'LIKE' || operator === 'NOT LIKE') {
                         value = '"%' + value[keys[0]] + '%"';
                     } else if (value instanceof RegExp) {
                         value = value.toString().slice(-1, 1);
                     } else if (['!=', '<>', '>', '<', '>=', '<='].includes(keys[0])) {
-                        res += '('+ keys.map(_key=> key + _key + value[_key]).join( ' ' + operatorJoin + ' ') + ')';
+                        res += '(' + keys.map(_key => {
+                            let val;
+                            if (this.safe){
+                                val = '?'
+                                this.safeWhere.push(value[_key])
+                            }else{
+                                val = value[_key];
+                            }
+
+                                return key + _key + val
+                        }).join(' ' + operatorJoin + ' ') + ')';
                         continue;
                     }
                 }
@@ -118,6 +135,11 @@ class QueryBuilder {
 
             } else {
                 value = this.#addQuoteIfNeeded(value);
+            }
+
+            if (this.safe && value) {
+                this.safeWhere.push(value);
+                value = '?'
             }
             res += (res.length ? ' ' + operatorJoin + ' ' : '') + key + ' ' + operator + ' ' + value
 
@@ -152,8 +174,7 @@ class QueryBuilder {
         }
 
         if (this.type === 'select') {
-
-            return (
+            const sql = (
                 'SELECT ' + (this.column.length ? this.column.join(', ') : '*') +
                 ' FROM ' + this.table +
                 ' WHERE ' + this.generateWhere() +
@@ -161,7 +182,9 @@ class QueryBuilder {
                 this.#runLimit()
 
 
-            )
+            );
+            console.log(this.safeWhere);
+            return sql;
         }
     }
 
@@ -217,7 +240,11 @@ const createSchema = params => {
         },
         select(columns = '*') {
             return q.select(columns)
+        },
+        count(where = {}, run = 1) {
+            return q.select('COUNT(*)').where(where).run(run)
         }
+
     }
 }
 
