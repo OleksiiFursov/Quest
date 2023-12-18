@@ -1,5 +1,6 @@
 import mysql from 'mysql2/promise.js'
 import config from './config.mjs'
+import Benchmark from 'benchmark';
 
 const db = mysql.createConnection({
     host: config.db.host,
@@ -251,6 +252,38 @@ const createSchema = params => {
 
 export {db, build, createSchema};
 
+
+
+const suite = new Benchmark.Suite;
+
+// Используя конкатенацию строк
+// suite.add('String Concatenation', function() {
+//     let result = '';
+//     for (let i = 0; i < 10000; i++) {
+//         result += 'some text';
+//     }
+// });
+//
+// // Используя массив
+// suite.add('Array Join', function() {
+//     let parts = [];
+//     for (let i = 0; i < 10000; i++) {
+//         parts.push('some text');
+//     }
+//     let result = parts.join('');
+// });
+//
+// // Запускаем бенчмарк
+// suite
+//     .on('cycle', function(event) {
+//         console.log(String(event.target));
+//     })
+//     .on('complete', function() {
+//         console.log('Fastest is ' + this.filter('fastest').map('name'));
+//     })
+//     .run({ 'async': true });
+
+//
 export default {
     db, build, createSchema
 }

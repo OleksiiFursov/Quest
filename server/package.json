@@ -7,6 +7,7 @@
   "license": "ISC",
   "dependencies": {
     "@crossfox/utils": "^1.1.4",
+    "benchmark": "^2.1.4",
     "dayjs": "^1.11.10",
     "mysql2": "^3.6.5",
     "nanoid": "^5.0.4",
