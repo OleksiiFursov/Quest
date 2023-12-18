@@ -5,11 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="13c3d146-fed7-46ac-83ed-4c5c1f8d9439" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/app.mjs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/db.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schemas/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/model/users.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/users.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/model/users.mjs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,7 +115,15 @@
       <option name="project" value="LOCAL" />
       <updated>1702857222399</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="db">
+      <option name="closed" value="true" />
+      <created>1702917570557</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1702917570557</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

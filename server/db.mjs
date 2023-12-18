@@ -327,7 +327,7 @@ const build = () => {
   }
 }
 
-const createSchema = params => {
+const createSchema = params => () => {
   const q = build().from(params.table)
   return {
     find (where, columns = '*', run = 1) {
