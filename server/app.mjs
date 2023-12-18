@@ -4,8 +4,8 @@ import config from './config.mjs'
 import { nanoid } from 'nanoid'
 import { controllersInit, controllersOn } from './loader.mjs'
 import { deepClone, formatDate } from './tools.mjs'
-import db from './db.mjs';
-
+import db from './db.mjs'
+import ModelUsers from './model/users.mjs'
 
 let options = {}
 if (config.isSSL) {
@@ -36,6 +36,7 @@ const storeInit = () => ({
 
 const all = callback => Object.values(_USERS).forEach(callback)
 
+console.log(await ModelUsers.find({ level_id: 1 }))
 
 const context = nToken => ({
   nToken,
@@ -85,7 +86,7 @@ wss.on('connection', (ws) => {
 
   const nToken = nanoid()
 
-  _DATA.stats.allConnect++;
+  _DATA.stats.allConnect++
 
   _USERS[nToken] = {
     wss: ws,
@@ -96,6 +97,7 @@ wss.on('connection', (ws) => {
 
   let $context = context(nToken)
   controllersInit($context, _USERS)
+
   ws.on('message', message => HandlerOn(message, nToken))
   ws.on('close', () => onClose(ws, nToken, $context))
 })
