@@ -23,6 +23,7 @@ class QueryBuilder {
     this.type = null
     this.safe = false
     this.safeWhere = []
+    this._asArray = false;
     this._where = []
     this._column = []
     this._limit = null
@@ -37,6 +38,10 @@ class QueryBuilder {
     throw new Error(msg + JSON.stringify(this))
   }
 
+  asArray(status=true){
+    this._asArray = status
+    return this;
+  }
   getLast () {
     return historySQL.at(-1) || null
   }
@@ -252,7 +257,7 @@ class QueryBuilder {
       this.#runLimit()
     )
 
-    const [data, err] = await this.#runQuery(sql)
+    const [data, err] = await this.#runQuery(this._asArray ? {sql, rowsAsArray: true}: sql )
     return [
       data ? data[0] : null,
       err ? [sql, err] : err,
@@ -330,6 +335,9 @@ const build = () => {
 const createSchema = params => () => {
   const q = build().from(params.table)
   return {
+    has(where){
+      return this.count(where)
+    },
     find (where, columns = '*', run = 1) {
       return q.select(columns).where(where).run(run)
     },
@@ -343,7 +351,8 @@ const createSchema = params => () => {
       return q.select(columns)
     },
     count (where = {}, run = 1) {
-      return q.select('COUNT(*)').where(where).run(run)
+      const res = q.select('COUNT(*)').asArray().where(where).run(run);
+      return res || res[0]
     },
     delete (where = {}, run = 1) {
       return q.delete().where(where).run(run)
