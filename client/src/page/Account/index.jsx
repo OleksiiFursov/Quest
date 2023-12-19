@@ -7,7 +7,6 @@ function AccountLoginPage(){
     const {Form, Submit, values, setValue} = useForm({
         initial,
         onSubmit(e){
-            console.log(11, values);
             WSS.req('account.login', values, (a) => console.log(777, a))
         }
     });

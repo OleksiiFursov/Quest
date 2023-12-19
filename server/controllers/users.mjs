@@ -4,7 +4,10 @@ export default {
    get(context, id){
 
    },
-   login(context, username, password){
-       modelUsers().count()
+   login(context, {login, password}){
+
+      return modelUsers().has({
+        username:
+      })
    }
 }
