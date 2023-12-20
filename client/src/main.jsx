@@ -22,7 +22,7 @@ const store = configureStore({
 // // {value: 2}
 // store.dispatch(decremented())
 
-window.WSS = new WSS(config.wss.host);
+window.WSS = new WSS({host: config.wss.host});
 
 const Router = createRouter({
     '': App,
