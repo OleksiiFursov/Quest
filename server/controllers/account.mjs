@@ -1,5 +1,5 @@
 import Resp from '../helpers/Resp.mjs'
-import { hashPassword } from '../helpers/password.mjs'
+import {comparePasswords} from '../helpers/password.mjs'
 import modelUsers from '../model/users.mjs'
 
 export default {
@@ -10,7 +10,7 @@ export default {
     if(!username){
       return Resp.error('Username is empty');
     }
-    if(!username.length < 3){
+    if(username.length < 3){
       return Resp.error('Username is too short');
     }
 
@@ -18,13 +18,16 @@ export default {
       return Resp.error('Password is empty');
     }
 
-    password = hashPassword(password);
-    const result =
-      modelUsers().has({
-        name,
-        password,
-      });
-    console.log(result);
-    Resp.success(result);
+    const passwordHashed = await modelUsers().column('password', {username});
+    if(!passwordHashed){
+      return Resp.error('Login or password is not correct');
+    }
+
+    if(await comparePasswords(password, passwordHashed)){
+      return Resp.success(true);
+    }else{
+      return Resp.error('Login or password is not correct');
+    }
+
   },
 }
