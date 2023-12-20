@@ -141,9 +141,9 @@ class QueryBuilder {
 
   #addQuoteIfNeeded (value) {
     if(this.escape){
-      value = this.escape(value);
+      value = db.escape(value);
     }
-    return typeof value === 'string' ? '\'' + value + '\'' : value
+    return value //typeof value === 'string' ? '\'' + value + '\'' : value
   }
 
   generateWhereItem (conditions, operatorJoin = 'AND') {
@@ -333,10 +333,12 @@ const createSchema = params => () => {
     find (where, columns = '*', run = 1) {
       return q.select(columns).where(where).run(run)
     },
-    findOne (where, columns = '*', run = 1) {
-      const res = q.select(columns).where(where).limit(1).run(run)
-      if (res && res[0]) {
-        return res[0]
+    async findOne (where, columns = '*', run = 1) {
+      const [data] = await q.select(columns).where(where).limit(1).run(run);
+      if (data && data[0]) {
+        return data[0]
+      }else{
+        return null;
       }
     },
     select (columns = '*') {
@@ -344,7 +346,7 @@ const createSchema = params => () => {
     },
     count (where = {}, run = 1) {
       const res = q.select('COUNT(*)').asArray().where(where).run(run);
-      return res || res[0]
+      return res ? res[0] : null
     },
     delete (where = {}, run = 1) {
       return q.delete().where(where).run(run)
@@ -355,6 +357,10 @@ const createSchema = params => () => {
     insert (data, where = {}, run = 1) {
       return q.insert(data).where(where).run(run)
     },
+    async column(column, where, run=1){
+      const res = await this.findOne(where, column, run);
+      return res ? res[column] : null
+    }
   }
 }
 
