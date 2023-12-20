@@ -5,9 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="13c3d146-fed7-46ac-83ed-4c5c1f8d9439" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/controllers/account.mjs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/helpers/Resp.mjs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/helpers/password.mjs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/helpers/valid.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/core/WSS/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/core/WSS/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../client/src/page/Account/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/page/Account/index.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/users.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/users.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/app.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/users.mjs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/db.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/loader.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/loader.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,25 +46,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "javascript.nodejs.core.library.configured.version": "16.19.1",
-    "javascript.nodejs.core.library.typings.version": "16.18.68",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.start.executor": "Run",
-    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\PhpStorm 2020.2.2\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;16.19.1&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;16.18.68&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.start.executor&quot;: &quot;Run&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\PhpStorm 2020.2.2\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Server\www\Quest\server" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
@@ -98,6 +113,7 @@
       <workItem from="1702819611266" duration="5475000" />
       <workItem from="1702841698618" duration="3288000" />
       <workItem from="1702976373275" duration="3296000" />
+      <workItem from="1703060068839" duration="9386000" />
     </task>
     <task id="LOCAL-00001" summary="db">
       <option name="closed" value="true" />

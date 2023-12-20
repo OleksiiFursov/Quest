@@ -1,3 +1,4 @@
+import config from '../config.js'
 import {render} from 'preact'
 import {App} from './app.jsx'
 
@@ -21,7 +22,7 @@ const store = configureStore({
 // // {value: 2}
 // store.dispatch(decremented())
 
-window.WSS = new WSS();
+window.WSS = new WSS(config.wss.host);
 
 const Router = createRouter({
     '': App,

@@ -1,58 +1,48 @@
-import mainController from './controllers/main.mjs';
-import systemController from './controllers/system.mjs';
-import usersController from './controllers/users.mjs';
+import mainController from './controllers/main.mjs'
+import systemController from './controllers/system.mjs'
+import accountController from './controllers/account.mjs'
 
-
-const controllers = {mainController, systemController, usersController},
-    controllerList = Object.values(controllers);
-
+const controllers = { mainController, systemController, accountController },
+  controllerList = Object.values(controllers)
 
 export const controllersInit = context => {
-    for(const controller of controllerList){
-        if(controller.init){
-            controller.init(context);
-        }
+  for (const controller of controllerList) {
+    if (controller.init) {
+      controller.init(context)
     }
+  }
 }
 
+function runController (context, controllerName, methodName, data = {}) {
+  controllerName += 'Controller'
 
-export const controllersOn = (context, message) => {
-    let {name, data} = JSON.parse(message);
-    if(!name || !name.length) return this;
-    context.config.isLog && context.notice(message);
-    if(name === 'set'){
-        context.store = Object.assign(context.store, data);
+  const controller = controllers[controllerName]
 
-        return true;
-    }
+  if (!controller) {
+    return context.error('Not found controller: ' + controllerName)
+  }
+  if (!controller[methodName]) {
+    return context.error('Not found method: ' + name)
+  }
+  return controller[methodName](context, data)
+}
 
-    let isCommand = false, dataId;
-    if(name === 'command'){
-        name = data.query;
-        dataId = data.id;
-        data = data.data;
-        isCommand = true;
-    }
-    if(name === 'req'){
-       console.log(data);
-    }
+export const controllersOn = async (context, message) => {
+  let { name, data } = JSON.parse(message)
+  if (!name || !name.length) return this
 
+  context.config.isLog && context.notice(data)
 
-    let [controllerName, methodName] = name.split('.');
-    controllerName = controllerName+'Controller';
+  if (name === 'set') {
+    context.store = Object.assign(context.store, data)
+    return true
+  }
 
-    const controller = controllers[controllerName];
+  if (name === 'req') {
+    const [query, params, values] = data
+    const [controllerName, methodName] = query.split('.')
+    const response = await runController(context, controllerName, methodName, values);
+    return context.emit('req', { id: params.id, data: response })
+  }
 
-    if(!controller){
-        return context.error('Not found controller: ' + controllerName);
-    }
-    if(!controller[methodName]){
-        return context.error('Not found method: ' + name);
-    }
-
-    const response = controller[methodName](context, data);
-    if(isCommand){
-        context.emit('command', {id: dataId, data: response});
-    }
-    return true;
 }

@@ -36,8 +36,6 @@ const storeInit = () => ({
 
 const all = callback => Object.values(_USERS).forEach(callback)
 
-console.log( await ModelUsers().find({ level_id: 1, name: 1 }),  await ModelUsers().find({ level_id: 1, name: 1 }))
-
 const context = nToken => ({
   nToken,
   wssConnect: nToken ? _USERS[nToken].wss : null,

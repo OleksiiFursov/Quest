@@ -6,7 +6,7 @@ const db = await mysql.createConnection({
   user: config.db.user,
   password: config.db.password,
   database: config.db.name,
-})
+});
 
 const operatorAlias = {
   NIN: 'NOT IN',
@@ -20,7 +20,8 @@ const historySQL = []
 class QueryBuilder {
   constructor () {
     this._from = null
-    this.type = null
+    this.type = null;
+    this.escape = true
     this.safe = false
     this.safeWhere = []
     this._asArray = false;
@@ -139,6 +140,9 @@ class QueryBuilder {
   }
 
   #addQuoteIfNeeded (value) {
+    if(this.escape){
+      value = this.escape(value);
+    }
     return typeof value === 'string' ? '\'' + value + '\'' : value
   }
 
@@ -266,14 +270,10 @@ class QueryBuilder {
   }
 
   async #runTypeUpdate () {
-    if (!Object.keys(this._data).length) return this.#err('Query is not data')
-    const sql = (
-      'UPDATE ' +
-      this._from +
-      this.#runDataUpdate() +
-      this.#runWhere() +
-      this.#runLimit()
-    )
+    if (!Object.keys(this._data).length) return this.#err('Query is not data');
+
+    const sql = `UPDATE ${this._from}${this.#runDataUpdate()}${this.#runWhere()}${this.#runLimit()}`;
+
     const [data, err] = await this.#runQuery(sql)
     return [
       data ? data[0] : null,
@@ -282,11 +282,7 @@ class QueryBuilder {
   }
 
   async #runTypeInsert () {
-    const sql = (
-      'INSERT INTO ' +
-      this._from +
-      this.#runDataInsert()
-    )
+    const sql = `INSERT INTO ${this._from}${this.#runDataInsert()}`
     const [data, err] = await this.#runQuery(sql)
     return [
       data ? data[0] : null,
@@ -298,11 +294,7 @@ class QueryBuilder {
     if (!this._where.length) {
       return this.#err('SAFE-STOP: Query in not exists WHERE')
     }
-    const sql = (
-      'DELETE FROM ' + this._from +
-      this.#runWhere() +
-      this.#runLimit()
-    )
+    const sql = `DELETE FROM ${this._from}${this.#runWhere()}${this.#runLimit()}`;
 
     const [data, err] = await this.#runQuery(sql)
     return [
