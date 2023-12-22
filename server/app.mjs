@@ -5,7 +5,6 @@ import { nanoid } from 'nanoid'
 import { controllersInit, controllersOn } from './loader.mjs'
 import { deepClone, formatDate } from './tools.mjs'
 import db from './db.mjs'
-import ModelUsers from './model/users.mjs'
 
 let options = {}
 if (config.isSSL) {

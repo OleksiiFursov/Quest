@@ -1,7 +1,0 @@
-config.local.mjs
-node_modules
-node_modules/*
-package-lock.json
-key
-key/*
-.idea/*
