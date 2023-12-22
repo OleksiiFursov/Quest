@@ -4,7 +4,7 @@ let lastWSS = {}
 
 export default function connectSocket (params={}) {
     const {
-        host,
+        host='ws://localhost:9999',
         multiConnect = false,
         reconnect = true,
         onError = function () {},
@@ -19,6 +19,7 @@ export default function connectSocket (params={}) {
         try {
             return new WebSocket(host)
         } catch (e) {
+            console.error(e);
             return {}
         }
     })()
@@ -41,9 +42,11 @@ export default function connectSocket (params={}) {
             return
         }
         if (name === 'req') {
-            if (lastWSS.promise[data.id]) {
-                lastWSS.promise[data.id][0](data.data)
-                delete lastWSS.promise[data.id]
+            const prom = lastWSS.promise;
+            const req = prom[data.id];
+            if (req) {
+                req[0](data.data)
+                delete prom[data.id]
                 return
             }
             return null
@@ -72,7 +75,7 @@ export default function connectSocket (params={}) {
         ws.close()
     }
 
-    return {
+    const res = {
         context: ws,
         stocks: {},
         events: [],
@@ -166,4 +169,6 @@ export default function connectSocket (params={}) {
             return this
         },
     }
+    lastWSS = res;
+    return res;
 }
