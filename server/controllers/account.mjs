@@ -6,6 +6,11 @@ export default {
   get (context, id) {
 
   },
+  me({store}){
+    if(store.token){
+      
+    }
+  },
   async login (context, { username, password }) {
     if(!username){
       return Resp.error('Username is empty');
