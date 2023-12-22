@@ -15,6 +15,8 @@ const normalizeItem = (key, item, root, createConfig = true) => {
         item.push(regDef);
     }
     if (createConfig && !isConfig) {
+
+
         item.push({})
     }
 }
