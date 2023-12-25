@@ -2,7 +2,6 @@ import mysql from "mysql";
 import config from "./config.mjs";
 
 
-
 export default function mysqlConnector(context, users, delay) {
     const connect = mysql.createConnection(config.db);
 

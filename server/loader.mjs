@@ -1,3 +1,4 @@
+import { parseJSON } from '@crossfox/utils'
 import mainController from './controllers/main.mjs'
 import systemController from './controllers/system.mjs'
 import accountController from './controllers/account.mjs'
@@ -22,19 +23,24 @@ function runController (context, controllerName, methodName, data = {}) {
     return context.error('Not found controller: ' + controllerName)
   }
   if (!controller[methodName]) {
-    return context.error('Not found method: ' + name)
+    return context.error('Not found method: ' + methodName + ' in controller: ' + controllerName + 'Controller');
   }
-  return controller[methodName](context, data)
+
+  try {
+    return controller[methodName](context, data);
+  } catch (error) {
+    return context.error('Error in method ' + methodName + ': ' + error);
+  }
 }
 
 export const controllersOn = async (context, message) => {
-  let { name, data } = JSON.parse(message)
-  if (!name || !name.length) return this
+  const { name, data } = parseJSON(message)
+  if (!name) return this
 
   context.config.isLog && context.notice(data)
 
   if (name === 'set') {
-    context.store = Object.assign(context.store, data)
+    context.store = {...context.store, ...data}
     return true
   }
 

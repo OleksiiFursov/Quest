@@ -13,7 +13,6 @@ function AccountLoginPage () {
     },
   })
 
-  console.log(123)
 
   return (<form onSubmit={async (e) => {
     e.preventDefault()
