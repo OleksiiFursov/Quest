@@ -1,174 +1,179 @@
-import { merge } from 'lodash-es'
+import config from '/config.js';
+import {merge, uniqueId} from "lodash-es";
 
-let lastWSS = {}
+const EVENTS = [];
 
-export default function connectSocket (params={}) {
-    const {
-        host='ws://localhost:9999',
-        multiConnect = false,
-        reconnect = true,
-        onError = function () {},
-        onClose = function () {},
-        onOpen = function () {},
-    } = params
-
-    if (lastWSS.context && (multiConnect || lastWSS.context.readyState === 1))
-        return lastWSS
-
-    const ws = (() => {
-        try {
-            return new WebSocket(host)
-        } catch (e) {
-            console.error(e);
-            return {}
-        }
-    })()
-
-    ws.onopen = e => {
-        if (Object.keys(lastWSS.stocks).length)
-            lastWSS.set(lastWSS.stocks, false)
-        onOpen(e)
+export default function connectSocket(params) {
+    if(window?.WSS?.context?.readyState === 1) return window.WSS;
+    let ws;
+    try{
+        ws = new WebSocket(config.wss.host);
+    } catch(e){
+        ws = {}
     }
 
-    ws.onmessage = e => {
-        const { name, data } = JSON.parse(e.data)
+    const args = Object.assign({
+        reconnect: true,
+        onError: error => {
+            setTimeout(()=>{
+                window.WSS.errors.push(error);
+            }, 100)
+            ws.close();
+        }
+    }, params);
 
-        if (name === 'error') {
-            console.error(data)
-            return
+    ws.onopen = e => {
+        window.WSS.set(window.WSS.stocks, false)
+        if('onOpen' in args){
+            args.onOpen(ws, e);
         }
-        if (name === 'notice') {
-            console.warn(data)
-            return
+    }
+
+    ws.onmessage = function(e) {
+        const {name, data} = JSON.parse(e.data);
+
+        if(name === 'error'){
+            console.error(data);
+            return;
         }
-        if (name === 'req') {
-            const prom = lastWSS.promise;
-            const req = prom[data.id];
-            if (req) {
-                req[0](data.data)
-                delete prom[data.id]
-                return
+        if(name === 'notice'){
+            console.warn(data);
+            return;
+        }
+        if(name === 'command'){
+            if(window.WSS.commands[data.id]){
+                window.WSS.commands[data.id](data.data);
+                delete window.WSS.commands[data.id];
+                return;
             }
-            return null
+            return null;
         }
-        for (const event of lastWSS.events) {
-            if (!event.name || event.name === name) {
-                event.callback(data, e)
+        for(const EVENT of EVENTS){
+            if(!EVENT.name || EVENT.name === name){
+
+                EVENT.callback(data, e);
             }
         }
     }
 
     ws.onclose = e => {
-        onClose(e)
-        if (reconnect) {
+        if('onClose' in args){
+            args.onClose(e);
+        }
+        if(args.reconnect && location.host.search('localhost') === -1){
             setTimeout(() => {
                 window.WSS.context = connectSocket(params).context
-            }, 1000)
+            }, 1000);
         }
-    }
+    };
 
-    ws.onerror = e => {
-        setTimeout(() => {
-            onError(e)
-            lastWSS.errors.push(e)
-        }, 100)
-        ws.close()
-    }
+    ws.onerror = args.onError;
 
-    const res = {
+    return {
         context: ws,
         stocks: {},
-        events: [],
+        events: EVENTS,
+        commands: {},
         errors: [],
         eventID: 0,
-        id: 0,
-        promise: {},
+        id:0,
         _timerLast: {},
-        onForce (name, callback) {
-            const eventId = this.has(name)
-            const data = { name, callback }
-            if (~eventId) {
-                this.events[eventId] = data
-            } else {
-                this.events.push(data)
+        onForce(name, callback){
+            const eventId = this.has(name);
+            if(~eventId){
+                EVENTS[eventId] = {name, callback};
+            }else{
+                EVENTS.push({name, callback});
             }
-            return this
+            return this;
         },
-        on (name, callback, check = true) {
-            if (check && ~this.has(name, callback)) {
-                return this
+        on(name, callback, check = true) {
+            if(check && ~this.has(name, callback)){
+                return this;
             }
-            this.eventID = this.events.push({ name, callback })
-            return this
+            this.eventID = EVENTS.push({name, callback});
+            return this;
         },
-        has (name, callback) {
-            for (let i = 0, len = this.events.length; i < len; i++) {
-                if (this.events[i].name === name && (!callback || this.events[i].callback === callback)) {
-                    return i
+        has(name, callback) {
+            for(let i = 0, len = EVENTS.length; i < len; i++){
+                if(EVENTS[i].name === name && (!callback || EVENTS[i].callback === callback)){
+                    return i;
                 }
             }
-            return -1
+            return -1;
         },
-        off (name, callback) {
-            if (!isNaN(name)) {
-                this.events.splice(name, 1)
-                return this
+        off(name, callback) {
+            if(!isNaN(name)){
+                EVENTS.splice(name, 1);
+                return this;
             }
 
-            for (let i = 0, len =  this.events.length; i < len; i++) {
-                if ( this.events[i].name === name &&  this.events[i].callback === callback) {
-                    this.events.splice(i, 1)
-                    break
+            for(let i = 0, len = EVENTS.length; i < len; i++){
+                if(EVENTS[i].name === name && EVENTS[i].callback === callback){
+                    EVENTS.splice(i, 1);
+                    break;
                 }
             }
-            return this
+            return this;
         },
-        set (data, saveStock = true) {
-            if (saveStock)
-                this.stocks = merge(this.stocks, data)
+        set(data, saveStock = true) {
 
-            this.emit('set', data)
-            return this
+            if(saveStock)
+                this.stocks = merge(this.stocks, data);
+
+            this.emit('set', data);
+            return this;
         },
-        req (path, data, res) {
+        req(path, data, res) {
 
-            return new Promise((resolve, reject) => {
-                this.promise[this.id] = [resolve, reject]
-                this.emit('req', [
-                    path,
-                    {
-                        response: res !== undefined,
-                        id: this.id++,
-                    },
-                    data,
-                ])
-
-            })
+            this.emit('req', [
+                path,
+                {
+                    response: res !== undefined,
+                    id: this.id++
+                },
+                data
+            ]);
+            return this;
         },
-        setLast (name, data, timeout = 75) {
-            if (this._timerLast[name]) {
+        setLast(name, data, timeout = 75) {
+            if(this._timerLast[name]){
                 clearTimeout(this._timerLast[name])
             }
-            this._timerLast[name] = setTimeout(() => this.set(data), timeout)
-            return this
+            this._timerLast[name] = setTimeout(() => this.set(data), timeout);
+            return this;
         },
-        emit (name, data, step) {
-            if (!this.context || this.context?.readyState === undefined) {
-                console.log('WSS is not completed', this);
-                return this
+        command(query, data={}, callback) {
+            const id = uniqueId();
+
+            if(typeof data === 'function'){
+                callback = data;
+                data = {}
             }
-            if (this.context?.readyState === this.context?.OPEN) {
-                this.context.send(JSON.stringify({ name, data }))
-            } else {
+
+            this.emit('command', {
+                query,
+                id,
+                data
+            });
+            this.commands[id] = callback || console.log;
+            return this;
+        },
+        emit(name, data, step) {
+            if(!this.context || this.context?.readyState === undefined){
+                console.log('WSS is not completed');
+                return this;
+            }
+            if(this.context?.readyState === this.context?.OPEN){
+                this.context.send(JSON.stringify({name, data}));
+            }else{
                 setTimeout(() => {
-                    step *= 1.2
-                    this.emit.apply(this, arguments)
-                }, Math.min(15000, 150 * step))
+                    step *= 1.2;
+                    this.emit.apply(this, arguments);
+                }, Math.min(15000, 150 * step));
 
             }
-            return this
-        },
-    }
-    lastWSS = res;
-    return res;
+            return this;
+        }
+    };
 }

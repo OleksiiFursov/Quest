@@ -1,7 +1,7 @@
 import config from '../config.js'
 import {render} from 'preact'
 import {App} from './app.jsx'
-
+import './assets/scss/main.scss';
 import {configureStore} from '@reduxjs/toolkit'
 import createRouter from "./core/Router/index.jsx";
 import reducerMain from "./main/reducer.js";
