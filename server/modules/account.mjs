@@ -1,9 +1,15 @@
-import build from '../db.mjs';
+import usersToken from "../model/usersToken.mjs";
 
-export default {
-    create_token(user_id, duration=86400){
+const ModuleAccount = {
+    async createToken(context){
+        console.log(context);
+        const result = await usersToken().insert({
+            token: 1,
 
-        const result = build.insert()
+
+        })
     }
 
 }
+
+export default ModuleAccount;

@@ -1,1 +1,1 @@
-export {default as InputLogin} from './InputLogin.js'
+export {default as InputLogin} from './InputLogin.jsx'

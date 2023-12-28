@@ -1,13 +1,26 @@
-import { useState } from 'preact/hooks'
+import {useEffect} from "preact/compat";
+import Storage from "./core/Storage/index.js";
+import {goTo} from "./core/Router/index.jsx";
+import config from "../config.js";
+import api from "./core/Api/index.js";
+import Loading from "./components/Loading/index.jsx";
+
 
 
 export function App() {
-  const [count, setCount] = useState(0)
 
-    console.log(1323);
+  useEffect(async ()=>{
+    const token = Storage.get('token');
+    if(token){
+      const res = await api.get('account.token', token);
+      console.log(res);
+
+    }else{
+      goTo(config.router.noAuth);
+    }
+
+  }, []);
   return (
-    <>
-     1124
-    </>
+    <Loading />
   )
 }

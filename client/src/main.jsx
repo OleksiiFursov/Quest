@@ -7,7 +7,8 @@ import createRouter from "./core/Router/index.jsx";
 import reducerMain from "./main/reducer.js";
 import {Provider} from 'react-redux';
 import AccountLoginPage from "./page/Account/index.jsx";
-import WSS from './core/WSS'
+import WSSConnect from './core/WSS'
+import LoginLayout from "./layouts/login/index.jsx";
 const store = configureStore({
     reducer: {
         main: reducerMain.reducer
@@ -22,15 +23,19 @@ const store = configureStore({
 // // {value: 2}
 // store.dispatch(decremented())
 
-window.WSS = new WSS({host: config.wss.host});
+export const WSS = new WSSConnect({host: config.wss.host});
+window.WSS = WSS;
 
 const Router = createRouter({
     '': App,
-    'account/login': AccountLoginPage
+    'account/login': [AccountLoginPage, {layout: 'login'}]
 });
 
+const layouts = {
+    'login': LoginLayout
+}
 render(
     <Provider store={store}>
-        <Router/>
+        <Router layouts={layouts}/>
     </Provider>,
     document.getElementById('app'))

@@ -1,6 +1,7 @@
 import Resp from '../helpers/Resp.mjs'
 import {comparePasswords} from '../helpers/password.mjs'
 import modelUsers from '../model/users.mjs'
+import ModuleAccount from "../modules/account.mjs";
 
 export default {
   get (context, id) {
@@ -29,6 +30,8 @@ export default {
     }
 
     if(await comparePasswords(password, passwordHashed)){
+      ModuleAccount.createToken(context)
+
       return Resp.success(true);
     }else{
       return Resp.error('Login or password is not correct');
