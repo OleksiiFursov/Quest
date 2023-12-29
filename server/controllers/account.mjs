@@ -13,6 +13,7 @@ export default {
     }
   },
   async login (context, { username, password }) {
+
     if(!username){
       return Resp.error('Username is empty');
     }
@@ -29,8 +30,9 @@ export default {
       return Resp.error('Login or password is not correct');
     }
 
+
     if(await comparePasswords(password, passwordHashed)){
-      ModuleAccount.createToken(context)
+      await ModuleAccount.createToken(context)
 
       return Resp.success(true);
     }else{

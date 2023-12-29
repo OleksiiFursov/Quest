@@ -1,6 +1,5 @@
-import {useEffect, useMemo} from 'preact/compat'
+import {useEffect} from 'preact/compat'
 import {useRef, useState} from 'preact/hooks'
-import {parseJSON, setObject} from "@crossfox/utils";
 import {setState} from "../helpers.js";
 import {Session} from "../core/Storage/index.js";
 
@@ -49,7 +48,7 @@ export default function useForm(props = {}) {
 
 
     useEffect(() => {
-        const saveData = Session.get('form-' + name);
+        const saveData = Session.get('form-' + nameForm);
 
         if (saveData) {
             setValue(saveData);
@@ -59,8 +58,8 @@ export default function useForm(props = {}) {
 
     const FormProps = {
         onInput: (e) => {
-            if (nameForm && sessionStorage) {
-                sessionStorage.setItem('form-' + nameForm, JSON.stringify(values));
+            if (nameForm) {
+               Session.set('form-' + nameForm, values);
             }
 
             const {name, value} = e.target;
@@ -75,6 +74,7 @@ export default function useForm(props = {}) {
                 }
             }
 
+
             setValue(setState(name, value));
         },
         onSubmit: (e) => {
@@ -88,6 +88,7 @@ export default function useForm(props = {}) {
 
     const SubmitProps = {
         disabled: !isValid,
+        type: 'submit',
         onMouseOver: () => {
             if (isCheck.current) return;
             const errors = {};

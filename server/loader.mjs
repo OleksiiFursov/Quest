@@ -16,7 +16,6 @@ export const controllersInit = context => {
 
 function runController (context, controllerName, methodName, data = {}) {
   controllerName += 'Controller'
-
   const controller = controllers[controllerName]
 
   if (!controller) {

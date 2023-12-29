@@ -2,6 +2,7 @@ import useForm from '../../hooks/useForm.jsx'
 import InputLogin, {ValidateLogin} from "../../components/Form/InputLogin.jsx";
 import InputPassword, {ValidatePassword} from "../../components/Form/InputPassword.jsx";
 import Button from "../../components/Form/Button.jsx";
+import notification from "../../components/Notification/index.jsx";
 
 const propsForm = {
     name: 'login',
@@ -10,8 +11,9 @@ const propsForm = {
         password: ValidatePassword
     },
     onSubmit: async (values) => {
+
           const [status, data] = await WSS.req('account.login', {
-            username: values.username,
+            username: values.login,
             password: values.password
           });
           if(status !== 200){

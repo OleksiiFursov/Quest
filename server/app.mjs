@@ -84,7 +84,6 @@ wss.on('connection', (ws) => {
   const nToken = nanoid()
 
   _DATA.stats.allConnect++
-
   _USERS[nToken] = {
     wss: ws,
     date: new Date().valueOf(),
