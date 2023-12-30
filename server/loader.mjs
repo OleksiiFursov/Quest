@@ -33,7 +33,7 @@ function runController (context, controllerName, methodName, data = {}) {
 }
 
 export const controllersOn = async (context, message) => {
-  const { name, data } = parseJSON(message)
+  const { name, data } = parseJSON(message.toString());
   if (!name) return this
 
   context.config.isLog && context.notice(data)
@@ -45,7 +45,7 @@ export const controllersOn = async (context, message) => {
 
   if (name === 'req') {
     const [query, params, values] = data
-    const [controllerName, methodName] = query.split('.')
+    const [controllerName, methodName] = query.split('/');
     const response = await runController(context, controllerName, methodName, values);
     return context.emit('req', { id: params.id, data: response })
   }

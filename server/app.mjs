@@ -68,7 +68,7 @@ const HandlerOn = (message, name) => {
 const wss = new WebSocketServer({ port: 9999 })
 
 const onClose = (ws, nToken, $context) => {
-  ws.off('message', HandlerOn)
+  //ws.off('message', HandlerOn)
   if (_USERS[nToken].store.username !== 'guest')
     _DATA.usersDisconnect.set(_USERS[nToken].store.username, Object.assign({
       date: _USERS[nToken].date,

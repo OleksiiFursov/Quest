@@ -3,6 +3,7 @@ import InputLogin, {ValidateLogin} from "../../components/Form/InputLogin.jsx";
 import InputPassword, {ValidatePassword} from "../../components/Form/InputPassword.jsx";
 import Button from "../../components/Form/Button.jsx";
 import notification from "../../components/Notification/index.jsx";
+import api from "../../core/Api/index.js";
 
 const propsForm = {
     name: 'login',
@@ -11,8 +12,8 @@ const propsForm = {
         password: ValidatePassword
     },
     onSubmit: async (values) => {
-
-          const [status, data] = await WSS.req('account.login', {
+        console.log(123);
+          const [status, data] = await api.send('account/login', {
             username: values.login,
             password: values.password
           });

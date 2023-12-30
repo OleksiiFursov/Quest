@@ -3,9 +3,12 @@ import {capitalize} from "lodash-es";
 
 export default {
     get(url, data){
-        const path = url.split('.');
+        const path = url.split('/');
         const lastIndex = path.length-1;
         path[lastIndex] = 'get'+capitalize(path[lastIndex]);
-        return WSS.req(path.join('.'), data)
+        return WSS.req(path.join('/'), data)
+    },
+    send(url, data){
+        return WSS.req(url, data)
     }
 }

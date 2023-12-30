@@ -6,7 +6,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@crossfox/utils": "^1.1.5",
+    "@crossfox/utils": "1.1.5",
     "bcrypt": "^5.1.1",
     "dayjs": "^1.11.10",
     "mysql2": "^3.6.5",

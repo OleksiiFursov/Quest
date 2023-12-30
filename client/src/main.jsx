@@ -1,3 +1,4 @@
+import "preact/debug";
 import config from '../config.js'
 import {render} from 'preact'
 import {App} from './app.jsx'

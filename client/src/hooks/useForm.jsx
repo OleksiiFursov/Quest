@@ -10,27 +10,29 @@ const validWithMsg = (valid, msg) => {
 }
 
 const getValidateError = {
-    require(value, obj){
+    require(value, obj) {
         const [, msg] = validWithMsg(obj, 'Field is empty');
-        return value === '' ? msg: false;
+        return value === '' ? msg : false;
     },
-    pattern(value, obj){
+    pattern(value, obj) {
         const [reg, msg] = validWithMsg(obj, 'Field is not correct');
-        return !reg.test(value) ? msg: false
+        return !reg.test(value) ? msg : false
     },
-    min(value, obj){
+    min(value, obj) {
         const [min, msg] = validWithMsg(obj, 'Field is too short');
-        return value.length < min ? msg: false
+        return value.length < min ? msg : false
     },
-    max(value, obj){
+    max(value, obj) {
         const [max, msg] = validWithMsg(obj, 'Field is too long');
-        return  value.length > max ? msg: false
+        return value.length > max ? msg : false
     }
 }
+
 function getValidate(value, rule) {
-    for(const key in rule){
+    value = value || '';
+    for (const key in rule) {
         const error = getValidateError[key](value, rule[key]);
-        if(error){
+        if (error) {
             return error
         }
     }
@@ -43,7 +45,6 @@ export default function useForm(props = {}) {
     const [values, setValue] = useState(initial);
     const [errors, setErrors] = useState({});
     const touched = useRef({});
-    const onStartCorrect = useRef(false);
     const isCheck = useRef(false);
 
 
@@ -56,10 +57,26 @@ export default function useForm(props = {}) {
 
     }, []);
 
+    const getIsValid = () => {
+        for (const key in validate) {
+            const error = errors[key];
+            if (error === undefined) {
+                if (!touched.current[key]) {
+                    const errorMsg = getValidate(values[key], validate[key]);
+                    if (errorMsg) return false;
+                    setErrors(setState(key, errorMsg))
+                }
+            } else if (error.length) {
+                return false;
+            }
+        }
+        return true;
+    };
+
     const FormProps = {
         onInput: (e) => {
             if (nameForm) {
-               Session.set('form-' + nameForm, values);
+                Session.set('form-' + nameForm, values);
             }
 
             const {name, value} = e.target;
@@ -67,7 +84,6 @@ export default function useForm(props = {}) {
 
             if (validate[name]) {
                 const error = getValidate(value, validate[name]);
-                console.log(name, error, errors, validate[name])
 
                 if (errors[name] !== error) {
                     setErrors(setState(name, error));
@@ -79,22 +95,32 @@ export default function useForm(props = {}) {
         },
         onSubmit: (e) => {
             e.preventDefault();
-            console.log('submit');
-            onSubmit && onSubmit(values, e);
+            const errors = {};
+            for (const key in validate) {
+                const error =  getValidate(values[key], validate[key]);
+                if(error)
+                    errors[key] = error;
+            }
+            if(Object.keys(errors).length){
+                setErrors(errors);
+                return 0;
+            }else{
+                onSubmit && onSubmit(values, e);
+            }
+
         }
     };
 
-    const isValid = Object.keys(touched.current).length && !Object.values(errors).filter(v => v).length
 
+    const isValid = getIsValid();
     const SubmitProps = {
         disabled: !isValid,
         type: 'submit',
         onMouseOver: () => {
             if (isCheck.current) return;
             const errors = {};
-            console.log(values);
             for (const key in validate) {
-                errors[key] = getValidate(values[key] || '', validate[key]);
+                errors[key] = getValidate(values[key], validate[key]);
             }
             setErrors(errors);
             isCheck.current = true;
@@ -106,30 +132,14 @@ export default function useForm(props = {}) {
         SubmitProps,
         values,
         errors,
-        isValid
+        isValid,
+        setValue: (name, value, isValid = true) => {
+            if (isValid) {
+                setErrors(setState(name, getValidate(value, validate[name])));
+            }
+
+            setValue(setState(name, value))
+        }
 
     }
 }
-// export default function useForm(props={}){
-//     const {initial = {}, onSubmit} = props;
-//     const [values, setValue] = useState(initial);
-//
-//     const set = useCallback(setValue, []);
-//
-//     const onSubmitHandler = e => {
-//         e.preventDefault();
-//         onSubmit && onSubmit(e, values);
-//     }
-//
-//     return {
-//         values,
-//         setValue: e => set(prev => setObject(prev)(e.target.name, e.target.value)),
-//         Form,
-//         Submit: (props) => {
-//             const {children} = props;
-//             return <button {...props}>{children}</button>
-//         }
-//
-//     }
-//
-// }
