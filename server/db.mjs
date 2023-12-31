@@ -238,7 +238,7 @@ class QueryBuilder {
   }
 
   #runDataInsert () {
-    return ' (' + Object.keys(this._data[0]).join(', ') + ') VALUES ' + this._data.map(v => '(' + Object.values(v).map(this.#addQuoteIfNeeded) + ')')
+    return ' (' + Object.keys(this._data[0]).join(', ') + ') VALUES ' + this._data.map(v => '(' + Object.values(v).map(v => this.#addQuoteIfNeeded(v)) + ')')
   }
 
   async #runQuery (sql) {
@@ -328,12 +328,12 @@ const createSchema = params => () => {
   const q = build().from(params.table)
   return {
     has(where){
-      return this.count(where)
+      return this.count(where) > 0
     },
     find (where, columns = '*', run = 1) {
       return q.select(columns).where(where).run(run)
     },
-    async findOne (where, columns = '*', run = 1) {
+    async findOne (where, columns = ['*'], run = 1) {
       const [data] = await q.select(columns).where(where).limit(1).run(run);
       if (data && data[0]) {
         return data[0]
@@ -360,7 +360,8 @@ const createSchema = params => () => {
     async column(column, where, run=1){
       const res = await this.findOne(where, column, run);
       return res ? res[column] : null
-    }
+    },
+
   }
 }
 

@@ -2,10 +2,10 @@ import {formatDate} from "../tools.mjs";
 
 export default {
     changePage(context, page) {
-        context.store.page = page;
-        context.store.pageHistory.push({page, date: formatDate()});
-        if (context.store.pageHistory.length > 10) {
-            context.store.pageHistory.shift();
+        context.state.page = page;
+        context.state.pageHistory.push({page, date: formatDate()});
+        if (context.state.pageHistory.length > 10) {
+            context.state.pageHistory.shift();
         }
         return true;
     }

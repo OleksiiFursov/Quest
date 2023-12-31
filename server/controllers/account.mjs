@@ -4,40 +4,50 @@ import modelUsers from '../model/users.mjs'
 import ModuleAccount from "../modules/account.mjs";
 
 export default {
-  get (context, id) {
+    get(context, id) {
 
-  },
-  me({store}){
-    if(store.token){
-      
-    }
-  },
-  async login (context, { username, password }) {
+    },
+    me({state}) {
+        if (state.token) {
 
-    if(!username){
-      return Resp.error('Username is empty');
-    }
-    if(username.length < 3){
-      return Resp.error('Username is too short');
-    }
+        }
+    },
+    async login(context, {username, password}) {
 
-    if(!password){
-      return Resp.error('Password is empty');
-    }
+        if (!username) {
+            return Resp.error('Username is empty');
+        }
+        if (username.length < 3) {
+            return Resp.error('Username is too short');
+        }
 
-    const passwordHashed = await modelUsers().column('password', {username});
-    if(!passwordHashed){
-      return Resp.error('Login or password is not correct');
-    }
+        if (!password) {
+            return Resp.error('Password is empty');
+        }
+
+        const userCurrent = await modelUsers().findOne({username});
+        if (!userCurrent) {
+            return Resp.error('Login or password is not correct');
+        }
 
 
-    if(await comparePasswords(password, passwordHashed)){
-      await ModuleAccount.createToken(context)
+        if (await comparePasswords(password, userCurrent.password)) {
+            context.state.user_id = userCurrent.id
+            const token = await ModuleAccount.createToken(context);
 
-      return Resp.success(true);
-    }else{
-      return Resp.error('Login or password is not correct');
-    }
+            delete userCurrent.password
+            if (token) {
+                return Resp.success({
+                    token,
+                    ...userCurrent
+                })
+            } else {
+                return Resp.error('Failed to create token');
+            }
 
-  },
+        } else {
+            return Resp.error('Login or password is not correct');
+        }
+
+    },
 }

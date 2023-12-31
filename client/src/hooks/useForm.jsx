@@ -75,10 +75,6 @@ export default function useForm(props = {}) {
 
     const FormProps = {
         onInput: (e) => {
-            if (nameForm) {
-                Session.set('form-' + nameForm, values);
-            }
-
             const {name, value} = e.target;
             touched.current[name] = true;
 
@@ -90,8 +86,10 @@ export default function useForm(props = {}) {
                 }
             }
 
-
             setValue(setState(name, value));
+            if (nameForm) {
+                Session.set('form-' + nameForm, values);
+            }
         },
         onSubmit: (e) => {
             e.preventDefault();

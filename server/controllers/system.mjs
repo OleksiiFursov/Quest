@@ -21,11 +21,11 @@ export default {
             {
                 message: data.message || '',
                 date: formatDate(),
-                role: context.store.role || null,
-                page: context.store.page,
-                id: context.store.id,
-                history: context.store.pageHistory || [],
-                username: context.store.username
+                role: context.state.role || null,
+                page: context.state.page,
+                id: context.state.id,
+                history: context.state.pageHistory || [],
+                username: context.state.username
 
             })
     },
@@ -100,7 +100,7 @@ export default {
         return context.config
     },
     getStore(context) {
-        return context.store;
+        return context.state;
     },
     setSystemMessage(context, data) {
         return context.emit('allMessage', data, true);

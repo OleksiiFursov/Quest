@@ -12,7 +12,6 @@ const propsForm = {
         password: ValidatePassword
     },
     onSubmit: async (values) => {
-        console.log(123);
           const [status, data] = await api.send('account/login', {
             username: values.login,
             password: values.password

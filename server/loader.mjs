@@ -39,7 +39,7 @@ export const controllersOn = async (context, message) => {
   context.config.isLog && context.notice(data)
 
   if (name === 'set') {
-    context.store = {...context.store, ...data}
+    context.state = {...context.state, ...data}
     return true
   }
 

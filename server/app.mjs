@@ -38,18 +38,20 @@ const all = callback => Object.values(_USERS).forEach(callback)
 const context = nToken => ({
   nToken,
   wssConnect: nToken ? _USERS[nToken].wss : null,
-  store: nToken ? _USERS[nToken].store : null,
+  state: nToken ? _USERS[nToken].state : null,
+  currentUser: _USERS[nToken],
   all,
   db,
   data: _DATA,
   users: _USERS,
   config: deepClone(config),
   emit (name, data = null, allUsers = false) {
+    const jsonStr = JSON.stringify({ name, data });
     if (!nToken || allUsers) {
-      all(self => self.wss.send(JSON.stringify({ name, data })))
+      all(self => self.wss.send(jsonStr))
       return this
     }
-    this.wssConnect.send(JSON.stringify({ name, data }))
+    this.wssConnect.send(jsonStr)
     return data
   },
   error (msg) {
@@ -69,16 +71,16 @@ const wss = new WebSocketServer({ port: 9999 })
 
 const onClose = (ws, nToken, $context) => {
   //ws.off('message', HandlerOn)
-  if (_USERS[nToken].store.username !== 'guest')
-    _DATA.usersDisconnect.set(_USERS[nToken].store.username, Object.assign({
+  if (_USERS[nToken].state.username !== 'guest')
+    _DATA.usersDisconnect.set(_USERS[nToken].state.username, Object.assign({
       date: _USERS[nToken].date,
       sessionEnd: formatDate(),
-    }, deepClone(_USERS[nToken].store)))
+    }, deepClone(_USERS[nToken].state)))
   delete _USERS[nToken]
   $context = null
 }
 
-wss.on('connection', (ws) => {
+wss.on('connection', (ws, req) => {
   ws.on('error', console.error)
 
   const nToken = nanoid()
@@ -87,7 +89,8 @@ wss.on('connection', (ws) => {
   _USERS[nToken] = {
     wss: ws,
     date: new Date().valueOf(),
-    store: storeInit(),
+    userAgent:req.headers['user-agent'],
+    state: storeInit(),
     ip: ws._socket.remoteAddress,
   }
 
