@@ -12,6 +12,9 @@ export default {
 
         }
     },
+    async checkToken(context, token){
+        console.log(ModuleAccount.checkToken(context, token));
+    },
     async login(context, {username, password}) {
 
         if (!username) {

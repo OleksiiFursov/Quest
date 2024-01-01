@@ -327,11 +327,11 @@ const build = () => {
 const createSchema = params => () => {
   const q = build().from(params.table)
   return {
-    has(where){
-      return this.count(where) > 0
+    async has(where){
+      return await this.count(where) > 0
     },
-    find (where, columns = '*', run = 1) {
-      return q.select(columns).where(where).run(run)
+    async find (where, columns = '*', run = 1) {
+      return await q.select(columns).where(where).run(run)
     },
     async findOne (where, columns = ['*'], run = 1) {
       const [data] = await q.select(columns).where(where).limit(1).run(run);
@@ -344,8 +344,8 @@ const createSchema = params => () => {
     select (columns = '*') {
       return q.select(columns)
     },
-    count (where = {}, run = 1) {
-      const res = q.select('COUNT(*)').asArray().where(where).run(run);
+    async count (where = {}, run = 1) {
+      const res = await q.select('COUNT(*)').asArray().where(where).run(run);
       return res ? res[0] : null
     },
     delete (where = {}, run = 1) {

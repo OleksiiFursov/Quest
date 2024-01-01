@@ -12,8 +12,7 @@ export function App() {
   useEffect(async ()=>{
     const token = Storage.get('token');
     if(token){
-      const res = await api.get('account.token', token);
-      console.log(res);
+      const res = await api.send('account/checkToken', token);
 
     }else{
       goTo(config.router.noAuth);
