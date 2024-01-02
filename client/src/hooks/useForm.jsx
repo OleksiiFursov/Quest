@@ -86,7 +86,7 @@ export default function useForm(props = {}) {
                 }
             }
 
-            setValue(setState(name, value));
+            setValue(() => setState(name, value)(values));
             if (nameForm) {
                 Session.set('form-' + nameForm, values);
             }
