@@ -27,6 +27,7 @@ const propsForm = {
 function AccountLoginForm() {
     const {FormProps, values, errors, SubmitProps} = useForm(propsForm);
 
+    console.log(1);
     return <form {...FormProps}>
         <InputLogin value={values.login} error={errors.login} autoComplete="off"/>
         <InputPassword value={values.password} error={errors.password} />

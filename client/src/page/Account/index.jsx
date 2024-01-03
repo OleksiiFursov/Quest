@@ -1,5 +1,5 @@
-import AccountLoginForm from "./Form.js";
-import H2 from "../../components/Text/H2.js";
+import AccountLoginForm from "./Form.jsx";
+import H2 from "../../components/Text/H2.jsx";
 
 function AccountLoginPage() {
     return (<div className="login-form-wrap">
