@@ -5,18 +5,20 @@ import config from "../config.mjs";
 
 const ModuleAccount = {
     async createToken(context) {
+        const conf = config.jwt;
+
         const userData = {
             userId: context.state.user_id,
         };
-        const token = jwt.sign(userData, config.jwt.secretKey, {expiresIn: config.jwt.expires});
+        const token = jwt.sign(userData, conf.secretKey, {expiresIn: conf.expires});
         context.currentUser.token = token;
 
         const result = await usersToken().insert({
-            token: token,
+            token,
             user_id: context.state.user_id,
             ip: context.currentUser.ip,
             data: context.currentUser.userAgent,
-            date_expires: new Date(Date.now() + (config.jwt.expires*1000))
+            date_expires: new Date(Date.now() + (conf.expires*1000))
         });
 
         return result[0] ? token : null;

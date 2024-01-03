@@ -5,6 +5,7 @@ import './notification.scss';
 const {setNotification} = appState.actions;
 
 let id = 0;
+
 const notification = {
     base(type, message, title=null, options = {}) {
         store.dispatch(setNotification({

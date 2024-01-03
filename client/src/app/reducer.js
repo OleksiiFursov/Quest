@@ -1,4 +1,4 @@
-import {createSlice} from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit'
 
 const appState = createSlice({
     name: 'app',
@@ -14,10 +14,14 @@ const appState = createSlice({
             // immutable state based off those changes
             state.token = value
         },
-        setNotification: (state, {payload}) => {
-           state.notifications.push(payload)
-        }
-    }
+        setNotification: (state, { payload }) => {
+            state.notifications.push(payload)
+        },
+        removeNotification: (state, { payload }) => {
+            const findIndex = state.notifications.findIndex(v => v.id === payload)
+            state.notifications.splice(payload, 1)
+        },
+    },
 })
 
-export default appState;
+export default appState
