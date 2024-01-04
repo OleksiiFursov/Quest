@@ -1,0 +1,68 @@
+[class*="animate-"] {
+  animation-duration: .4s;
+  animation-fill-mode: both;
+}
+
+.animate-reverse{
+  animation-direction: reverse;
+  animation-iteration-count: 2;
+}
+
+
+.animate-backInRight {
+  animation-name: backInRight;
+}
+
+@keyframes backInRight {
+  0% {
+    transform: translateX(2000px) scale(0.7);
+    opacity: 0.7;
+  }
+
+  80% {
+    transform: translateX(0px) scale(0.7);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+@-webkit-keyframes backOutRight {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  20% {
+    transform: translateX(0px) scale(0.7);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: translateX(2000px) scale(0.7);
+    opacity: 0.7;
+  }
+}
+@keyframes backOutRight {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  20% {
+    transform: translateX(0px) scale(0.7);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: translateX(2000px) scale(0.7);
+    opacity: 0.7;
+  }
+}
+.animate-backOutRight {
+  animation-name: backOutRight;
+}

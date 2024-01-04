@@ -34,7 +34,7 @@ export function formatDate(ms){
     if(typeof ms === 'number'){
         ms = new Date(ms);
     }
-    const f = a => (''+a).padStart(2,0);
+    const f = a => (''+a).padStart(2,'0');
 
     return f(ms.getFullYear())+'-'+f(ms.getMonth())+'-'+f(ms.getDate())+' ' +
         f(ms.getHours())+':'+f(ms.getMinutes())+':'+f(ms.getSeconds());
@@ -93,5 +93,16 @@ export function normalizeObject(arr){
         }
     }
     return a;
+}
+export function rand(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) ) + min;
+}
 
+export function createToken(length=64){
+    const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890^%_-$#';
+    let res = '';
+    for(let i = 0; i < length; i++){
+        res += alphabet[rand(0, alphabet.length)];
+    }
+    return res;
 }

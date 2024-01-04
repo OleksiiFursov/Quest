@@ -18,8 +18,8 @@ const appState = createSlice({
             state.notifications.push(payload)
         },
         removeNotification: (state, { payload }) => {
-            const findIndex = state.notifications.findIndex(v => v.id === payload)
-            state.notifications.splice(payload, 1)
+            const findIndex = state.notifications.findIndex(v => v.id === payload);
+            state.notifications.splice(findIndex, 1)
         },
     },
 })

@@ -1,5 +1,5 @@
+import { createToken } from 'src/tools.mjs'
 import usersToken from "../model/usersToken.mjs";
-import jwt from "jsonwebtoken";
 import config from "../config.mjs";
 
 
@@ -7,10 +7,7 @@ const ModuleAccount = {
     async createToken(context) {
         const conf = config.jwt;
 
-        const userData = {
-            userId: context.state.user_id,
-        };
-        const token = jwt.sign(userData, conf.secretKey, {expiresIn: conf.expires});
+        const token = createToken();
         context.currentUser.token = token;
 
         const result = await usersToken().insert({

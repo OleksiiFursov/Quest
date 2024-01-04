@@ -1,102 +1,14 @@
-import { WebSocketServer } from 'ws'
-import { readFileSync } from 'fs'
-import config from './config.mjs'
-import { nanoid } from 'nanoid'
-import { controllersInit, controllersOn } from './loader.mjs'
-import { deepClone, formatDate } from './tools.mjs'
-import db from './db.mjs'
-
-let options = {}
-if (config.isSSL) {
-  options = {
-    cert: readFileSync('/path/to/cert.pem'),
-    key: readFileSync('/path/to/key.pem'),
-  }
-}
-
-//STORE:
-const _USERS = {}
-const _DATA = {
-  stats: {
-    maxOnline: 0,
-    allConnect: 0,
-    startMemory: process.memoryUsage(),
-    startDate: new Date().valueOf(),
-    all: {},
-  },
-  errors: [],
-  usersDisconnect: new Map(),
-}
-
-const storeInit = () => ({
-  page: '',
-  pageHistory: [],
+import moduleAlias from "module-alias";
+moduleAlias.addAlias('@src', (fromPath, request, alias) => {
+    // fromPath - Full path of the file from which `require` was called
+    // request - The path (first argument) that was passed into `require`
+    // alias - The same alias that was passed as first argument to `addAlias` (`@src` in this case)
+        console.log(1);
+    // Return any custom target path for the `@src` alias depending on arguments
+    if (fromPath.startsWith(__dirname + '/others')) return __dirname + '/others'
+    return __dirname + '/src'
 })
 
-const all = callback => Object.values(_USERS).forEach(callback)
+import config from '@src/config.mjs'
 
-const context = nToken => ({
-  nToken,
-  wssConnect: nToken ? _USERS[nToken].wss : null,
-  state: nToken ? _USERS[nToken].state : null,
-  currentUser: _USERS[nToken],
-  all,
-  db,
-  data: _DATA,
-  users: _USERS,
-  config: deepClone(config),
-  emit (name, data = null, allUsers = false) {
-    const jsonStr = JSON.stringify({ name, data });
-    if (!nToken || allUsers) {
-      all(self => self.wss.send(jsonStr))
-      return this
-    }
-    this.wssConnect.send(jsonStr)
-    return data
-  },
-  error (msg) {
-    this.emit('error', msg)
-  },
-  notice (msg) {
-    this.emit('notice', msg)
-  },
-  global: token => context(token),
-})
-
-const HandlerOn = (message, name) => {
-  controllersOn(context(name), message)
-}
-
-const wss = new WebSocketServer({ port: 9999 })
-
-const onClose = (ws, nToken, $context) => {
-  //ws.off('message', HandlerOn)
-  if (_USERS[nToken].state.username !== 'guest')
-    _DATA.usersDisconnect.set(_USERS[nToken].state.username, Object.assign({
-      date: _USERS[nToken].date,
-      sessionEnd: formatDate(),
-    }, deepClone(_USERS[nToken].state)))
-  delete _USERS[nToken]
-  $context = null
-}
-
-wss.on('connection', (ws, req) => {
-  ws.on('error', console.error)
-
-  const nToken = nanoid()
-
-  _DATA.stats.allConnect++
-  _USERS[nToken] = {
-    wss: ws,
-    date: new Date().valueOf(),
-    userAgent:req.headers['user-agent'],
-    state: storeInit(),
-    ip: ws._socket.remoteAddress,
-  }
-
-  let $context = context(nToken)
-  controllersInit($context, _USERS)
-
-  ws.on('message', message => HandlerOn(message, nToken))
-  ws.on('close', () => onClose(ws, nToken, $context))
-})
+console.log(1);
