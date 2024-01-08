@@ -6,9 +6,16 @@ export default merge({
     isLog: false,
     port: 9999,
     isSSL: false,
-    jwt: {
-        secretKey: 'ILoveCamelCase',
-        expires: 12 * 60 * 60
+    login: {
+        token: {
+            length: 64,
+            expires: 60*60*24,
+            restore: 60*60*24*30
+        },
+        attempt: {
+            duration: 900,
+            limit: 5
+        }
     },
     db: {
         host: '31.131.24.159',

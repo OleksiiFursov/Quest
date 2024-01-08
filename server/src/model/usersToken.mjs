@@ -5,7 +5,7 @@ export default createSchema({
         token: ['string'],
         user_id: ['number'],
         ip: ['ip'],
-        data: ['string'],
+        user_agent: ['string'],
         date_expires: ['datetime']
     }
 })

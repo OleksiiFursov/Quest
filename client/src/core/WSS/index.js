@@ -24,63 +24,14 @@ export default function connectSocket (params={}) {
         }
     })()
 
-    ws.onopen = e => {
-        if (Object.keys(lastWSS.stocks).length)
-            lastWSS.set(lastWSS.stocks, false)
-        onOpen(e)
-    }
-
-    ws.onmessage = e => {
-        const { name, data } = JSON.parse(e.data)
-
-        if (name === 'error') {
-            console.error(data)
-            return
-        }
-        if (name === 'notice') {
-            console.warn(data)
-            return
-        }
-        if (name === 'req') {
-            const prom = lastWSS.promise;
-            const req = prom[data.id];
-            if (req) {
-                req[0](data.data)
-                delete prom[data.id]
-                return
-            }
-            return null
-        }
-        for (const event of lastWSS.events) {
-            if (!event.name || event.name === name) {
-                event.callback(data, e)
-            }
-        }
-    }
-
-    ws.onclose = e => {
-        onClose(e)
-        if (reconnect) {
-            setTimeout(() => {
-                window.WSS.context = connectSocket(params).context
-            }, 1000)
-        }
-    }
-
-    ws.onerror = e => {
-        setTimeout(() => {
-            onError(e)
-            lastWSS.errors.push(e)
-        }, 100)
-        ws.close()
-    }
-
     const res = {
         context: ws,
         stocks: {},
+        rand: Math.random(),
         events: [],
         errors: [],
         eventID: 0,
+        _reDelay: 150,
         id: 0,
         promise: {},
         _timerLast: {},
@@ -152,23 +103,83 @@ export default function connectSocket (params={}) {
             this._timerLast[name] = setTimeout(() => this.set(data), timeout)
             return this
         },
-        emit (name, data, step) {
-            if (!this.context || this.context?.readyState === undefined) {
+        emit (name, data) {
+            const context = this.context || {};
+            const {readyState, OPEN} = context;
+
+            if (readyState === undefined) {
                 console.log('WSS is not completed', this);
                 return this
             }
-            if (this.context?.readyState === this.context?.OPEN) {
-                this.context.send(JSON.stringify({ name, data }))
+            if (readyState === OPEN) {
+                context.send(JSON.stringify({ name, data }))
+                this._reDelay = 150;
             } else {
+                console.log('error', this.rand, readyState);
                 setTimeout(() => {
-                    step *= 1.2
+                    this._reDelay = Math.min(5000, this._reDelay * 1.2)
                     this.emit.apply(this, arguments)
-                }, Math.min(15000, 150 * step))
+                }, this._reDelay)
 
             }
             return this
         },
     }
+    ws.onopen = e => {
+        console.log("WSS: Connected");
+        if (Object.keys(lastWSS.stocks).length)
+            lastWSS.set(lastWSS.stocks, false)
+        onOpen(e)
+    }
+
+    ws.onmessage = e => {
+        const { name, data } = JSON.parse(e.data)
+
+        if (name === 'error') {
+            console.error(data)
+            return
+        }
+        if (name === 'notice') {
+            console.warn(data)
+            return
+        }
+        if (name === 'req') {
+            const prom = lastWSS.promise;
+            const req = prom[data.id];
+            if (req) {
+                req[0](data.data)
+                delete prom[data.id]
+                return
+            }
+            return null
+        }
+        for (const event of lastWSS.events) {
+            if (!event.name || event.name === name) {
+                event.callback(data, e)
+            }
+        }
+    }
+
+    ws.onclose = e => {
+        onClose(e)
+        if (reconnect) {
+            setTimeout(() => {
+                res.context = connectSocket(params).context
+                console.log('reconnecting');
+            }, 1000)
+        }
+    }
+
+    ws.onerror = e => {
+        setTimeout(() => {
+            onError(e)
+            lastWSS.errors.push(e)
+        }, 100)
+        ws.close()
+    }
+
+
+    console.log(res.rand);
     lastWSS = res;
     return res;
 }

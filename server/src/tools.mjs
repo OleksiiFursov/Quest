@@ -1,3 +1,5 @@
+import config from './config.mjs'
+
 export function deepClone(obj) {
     const clObj = {};
     for(const i in obj) {
@@ -106,3 +108,23 @@ export function createToken(length=64){
     }
     return res;
 }
+
+export function getConfig(path, def={}){
+    path = path.split('.');
+    let current = config;
+    do{
+        const item = path.shift();
+        current = current[item];
+        if(!current) {
+            error('Invalid config path "' + path + '"');
+            return def;
+        }
+    }while(path.length);
+    return current
+}
+
+export function error(msg){
+    console.error(msg)
+}
+
+

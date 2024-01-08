@@ -35,36 +35,40 @@ export default function NotificationList () {
     const remove = id => {
         store.dispatch(removeNotification(id))
     }
+    const opacity = items.length - 1 - 7
+
     return <div className="notification-list">
-        {items.slice(-7).map(({ id, type, title, message }) => {
+        {items.map(({ id, type, title, message }, index) => {
             const { icon, color, titleDef } = iconStyle[type]
 
             const isClose = isCloseAlerts[id]
             const IconClose = (
-              <IconButton variant="soft" color={color}
-                          onClick={() => setIsClose(setState(id, true))}>
+              <IconButton
+                variant="soft"
+                color={color}
+                onClick={() => setIsClose(setState(id, true))}
+              >
                   <CloseRoundedIcon/>
               </IconButton>)
 
             return (
-              <>
-                  <Alert
-                    key={id}
-                    startDecorator={icon}
-                    variant="soft"
-                    color={color}
-                    className={isClose ? 'animate-backOutRight' : 'animate-backInRight'}
-                    endDecorator={IconClose}
-                    onAnimationend={() => isClose && remove(id)}
-                  >
-                      <div>
-                          <div>{title || titleDef}</div>
-                          <Typography level="body-sm" color={color}>
-                              {message}
-                          </Typography>
-                      </div>
-                  </Alert>
-              </>
+              <Alert
+                key={id}
+                startDecorator={icon}
+                variant="soft"
+                color={color}
+                className={(opacity>index ? 'hidden ':'') + (isClose ? 'animate-backOutRight' : 'animate-backInRight')}
+                endDecorator={IconClose}
+                onAnimationend={() => isClose && remove(id)}
+              >
+                  <div>
+                      <div>{title || titleDef}</div>
+                      <Typography level="body-sm" color={color}>
+                          {message}
+                      </Typography>
+                  </div>
+              </Alert>
+
             )
         })
         }
