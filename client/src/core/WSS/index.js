@@ -9,8 +9,9 @@ const connector = function (host, onOpen, onError, onClose, reconnect) {
 		const ws = new WebSocket(host)
 
 		ws.onopen = e => {
-			isLog && console.log('WSS: Connected')
+			isLog && console.log('[WSS] Connected')
 			WSSContext.context = ws
+			WSSContext._reDelay = 150
 			if (Object.keys(WSSContext.stocks).length)
 				WSSContext.set(WSSContext.stocks, false)
 			onOpen(e)
@@ -50,14 +51,13 @@ const connector = function (host, onOpen, onError, onClose, reconnect) {
 			if (reconnect) {
 				setTimeout(() => {
 					connector(...arguments)
-					isLog && console.log('WSS: reconnecting');
-					WSSContext._reDelay = Math.min(WSSContext._reDelay*1.2, 5000);
+					isLog && console.log('[WSS] reconnecting')
+					WSSContext._reDelay = Math.min(WSSContext._reDelay * 1.2, 5000)
 				}, WSSContext._reDelay)
 			}
 		}
 		ws.onerror = e => {
 			onError(e)
-			console.log(e)
 			WSSContext.errors.push(e)
 			ws.close()
 		}
@@ -71,17 +71,17 @@ const connector = function (host, onOpen, onError, onClose, reconnect) {
 export default function connectSocket (params = {}) {
 	const {
 		host = 'ws://localhost:9999',
-		multiConnect = false,
 		reconnect = true,
 		onError = function () {},
 		onClose = function () {},
 		onOpen = function () {},
 	} = params
 
-	if (WSSContext.context && (multiConnect || WSSContext.context.readyState === 1))
+	if (WSSContext.context && WSSContext.context.readyState === 1)
 		return WSSContext
 
 	connector(host, onOpen, onError, onClose, reconnect)
+
 	const res = {
 		stocks: {},
 		events: [],
@@ -91,26 +91,27 @@ export default function connectSocket (params = {}) {
 		promise: {},
 		_reDelay: 150,
 		_timerLast: {},
+		queues: [],
 		onForce (name, callback) {
-			const eventId = this.has(name) || this.events.length;
+			const eventId = this.has(name) || this.events.length
 			this.events[eventId] = { name, callback }
 			return this
 		},
 		on (name, callback, check = true) {
-			if (!check || !~this.has(name, callback)){
+			if (!check || !~this.has(name, callback)) {
 				this.eventID = this.events.push({ name, callback })
 			}
 			return this
 		},
 		has (name, callback) {
-			return this.events.findIndex(event => event.name === name && (!callback || event.callback === callback))
+			return this.events.findIndex(e => e.name === name && (!callback || e.callback === callback))
 		},
 		off (name, callback) {
 			if (!isNaN(name)) {
 				this.events.splice(name, 1)
 				return this
 			}
-			const index = this.events.findIndex(event => event.name === name && event.callback === callback)
+			const index = this.events.findIndex(e => e.name === name && e.callback === callback)
 			this.events.splice(index, 1)
 			return this
 		},
@@ -143,20 +144,28 @@ export default function connectSocket (params = {}) {
 			this._timerLast[name] = setTimeout(() => this.set(data), timeout)
 			return this
 		},
-		emit (name, data) {
+		emit (name, data, queuePos = 'push') {
 			const context = WSSContext.context || {}
 			const { readyState, OPEN } = context
 
-			if (readyState === OPEN) {
+			if (readyState !== undefined && readyState === OPEN) {
 				context.send(JSON.stringify({ name, data }))
-				this._reDelay = 150
+				WSSContext._reDelay = 150
+				return true
 			} else {
-				setTimeout(() => {
-					this._reDelay = Math.min(5000, this._reDelay * 1.2)
-					this.emit.apply(this, arguments)
-				}, this._reDelay)
+				WSSContext.queues[queuePos]([name, data])
+				WSSContext._reDelay = Math.min(5000, WSSContext._reDelay * 1.2)
+				this.runQueue()
+				return false
 			}
-			return this
+		},
+		runQueue () {
+			setTimeout(() => {
+				while (this.queues.length) {
+					const queue = this.queues.shift()
+					if (!WSSContext.emit(...queue)) break
+				}
+			}, WSSContext._reDelay)
 		},
 	}
 
