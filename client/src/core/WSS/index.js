@@ -5,6 +5,7 @@ let WSSContext = {}
 let isLog = true
 
 const connector = function (host, onOpen, onError, onClose, reconnect) {
+	console.log('con');
 	try {
 		const ws = new WebSocket(host)
 
@@ -52,7 +53,7 @@ const connector = function (host, onOpen, onError, onClose, reconnect) {
 				setTimeout(() => {
 					connector(...arguments)
 					isLog && console.log('[WSS] reconnecting')
-					WSSContext._reDelay = Math.min(WSSContext._reDelay * 1.2, 5000)
+					WSSContext._reDelay = Math.min(WSSContext._reDelay * 1.2, 3000)
 				}, WSSContext._reDelay)
 			}
 		}
@@ -154,13 +155,14 @@ export default function connectSocket (params = {}) {
 				return true
 			} else {
 				WSSContext.queues[queuePos]([name, data])
-				WSSContext._reDelay = Math.min(5000, WSSContext._reDelay * 1.2)
+				WSSContext._reDelay = Math.min(3000, WSSContext._reDelay * 1.2)
 				this.runQueue()
 				return false
 			}
 		},
 		runQueue () {
 			setTimeout(() => {
+				isLog && console.log('[WSS] try connecting');
 				while (this.queues.length) {
 					const queue = this.queues.shift()
 					if (!WSSContext.emit(...queue)) break

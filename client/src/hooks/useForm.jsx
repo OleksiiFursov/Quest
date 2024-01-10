@@ -1,4 +1,4 @@
-import { useEffect } from 'preact/compat'
+import { useCallback, useEffect } from 'preact/compat'
 import { useRef, useState } from 'preact/hooks'
 import { isDiff, setState } from '../helpers.js'
 import { Session } from '../core/Storage/index.js'
@@ -45,6 +45,7 @@ export default function useForm (props = {}) {
     const [errors, setErrors] = useState({})
     const touched = useRef({})
     const isCheck = useRef(false)
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const saveData = Session.get('form-' + nameForm)
@@ -89,21 +90,24 @@ export default function useForm (props = {}) {
                 Session.set('form-' + nameForm, values)
             }
         },
-        onSubmit: (e) => {
-            e.preventDefault()
+        onSubmit: async  (e) => {
+            e.preventDefault();
             const errs = {}
             for (const key in validate) {
                 const error = getValidate(values[key], validate[key])
                 if (error)
                     errors[key] = error
             }
+
             if (Object.keys(errs).length) {
                 if(isDiff(errs, errors)) {
                     setErrors(errs);
                 }
                 return 0
             } else {
-                onSubmit && onSubmit(values, e)
+                setLoading(true);
+                onSubmit && await onSubmit(values, e);
+                setLoading(false);
             }
 
         },
@@ -111,7 +115,7 @@ export default function useForm (props = {}) {
 
     const isValid = getIsValid()
     const SubmitProps = {
-        disabled: !isValid,
+        disabled: !isValid || loading,
         type: 'submit',
         onMouseOver: () => {
             if (isCheck.current) return
@@ -132,6 +136,8 @@ export default function useForm (props = {}) {
         values,
         errors,
         isValid,
+        setLoading: useCallback(setLoading, []),
+        loading,
         setValue: (name, value, isValid = true) => {
             if (isValid) {
                 setErrors(setState(name, getValidate(value, validate[name])))

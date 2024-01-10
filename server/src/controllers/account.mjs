@@ -1,69 +1,87 @@
 import usersAttempt from '#model/usersAttempt.js'
+import db, { dateNow, lastQuery } from '../db.mjs'
 import Resp from '../helpers/Resp.mjs'
-import {comparePasswords} from '../helpers/password.mjs'
+import { comparePasswords } from '../helpers/password.mjs'
 import modelUsers from '../model/users.mjs'
-import ModuleAccount from "../modules/account.mjs";
+import ModuleAccount from '../modules/account.mjs'
 import { getConfig } from '../tools.mjs'
 
 export default {
-    get(context, id) {
+	get (context, id) {
 
-    },
-    me({state}) {
-        if (state.token) {
+	},
+	me ({ state }) {
+		if (state.token) {
 
-        }
-    },
-    async checkToken(context, token){
-        console.log(ModuleAccount.checkToken(context, token));
-    },
-    async login(context, {username, password}) {
+		}
+	},
+	async checkToken (context, token) {
+		console.log(ModuleAccount.checkToken(context, token))
+	},
 
-        console.log(1);
-        if (!username) {
-            return Resp.error('Username is empty');
-        }
-        if (username.length < 3) {
-            return Resp.error('Username is too short');
-        }
+	_loginAttempt (context, username, error) {
+		usersAttempt().insert({
+			username,
+			ip: context.currentUser.ip,
+			user_agent: context.currentUser.userAgent,
+		});
+		return Resp.error(error)
+	},
+	async login (context, { username, password }) {
+		const confAttempt = getConfig('login.attempt');
 
-        const confAttempt = getConfig('login.attempt');
+		const countAttempt = await usersAttempt().count({
+			date_created: {'>':dateNow(-confAttempt.duration)},
+			username,
+		})
 
-        if(await usersAttempt().count({
-            date_created: '``NOW()-'+confAttempt.duration
-        }) > confAttempt.limit){
-            return Resp.error('Too many failed authorization attempts have been made', 403)
-        }
+		if (countAttempt >= confAttempt.limit) {
+			return Resp.error('Many unsuccessful login attempts have been made, please try again later.', 403)
+		}
 
-        if (!password) {
-            return Resp.error('Password is empty');
-        }
+		// IS EMPTY:
+		if (!username) {
+			return this._loginAttempt(context, username,'Username is empty');
+		}
+		if (!password) {
+			return this._loginAttempt(context, username,'Password is empty')
+		}
 
-        const userCurrent = await modelUsers().findOne({username});
-        if (!userCurrent) {
-            return Resp.error('Login or password is not correct');
-        }
-        if (await comparePasswords(password, userCurrent.password)) {
-            context.state.user_id = userCurrent.id
-            const token = await ModuleAccount.createToken(context);
-            delete userCurrent.password
+		//CHECK ENABLED CAPTCHA
+		const isEnabledCaptcha = countAttempt >= confAttempt.enableCaptcha
 
-            if (token) {
-                return Resp.success({
-                    token,
-                    ...userCurrent
-                })
-            } else {
-                return Resp.error('Failed to create token');
-            }
+		if (isEnabledCaptcha) {
+			context.emit('login.enableCaptcha', true)
+		}
 
-        } else {
-            usersAttempt().insert({
-                username,
-                ip: context.currentUser.ip,
-                user_agent: context.currentUser.userAgent,
-            });
-            return Resp.error('Login or password is not correct');
-        }
-    },
+		// CHECK USERNAME:
+		if (username.length < 3) {
+			return this._loginAttempt(context, username,'Username is too short')
+		}
+		const userCurrent = await modelUsers().findOne({ username })
+		if (!userCurrent) {
+			return this._loginAttempt(context, username,'Login or password is not correct')
+		}
+
+
+
+		if (await comparePasswords(password, userCurrent.password)) {
+			context.state.user_id = userCurrent.id
+			const token = await ModuleAccount.createToken(context)
+			delete userCurrent.password
+
+			if (token) {
+				context.emit('login.captcha', false)
+				return Resp.success({
+					token,
+					...userCurrent,
+				})
+			} else {
+				return Resp.error('Failed to create token')
+			}
+
+		} else {
+			return this._loginAttempt(context, username,'Login or password is not correct')
+		}
+	},
 }

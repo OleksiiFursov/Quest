@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { memo } from 'preact/compat'
 
 import { useState } from 'preact/hooks'
 import { useSelector } from 'react-redux'
@@ -29,6 +30,10 @@ const iconStyle = {
 }
 
 const { removeNotification } = appState.actions
+
+// const NotificationItem = memo(({ id, type, title, message}){
+//
+// }
 export default function NotificationList () {
     const items = useSelector(selectNotification)
     const [isCloseAlerts, setIsClose] = useState({})
@@ -39,7 +44,7 @@ export default function NotificationList () {
 
     return <div className="notification-list">
         {items.map(({ id, type, title, message }, index) => {
-            const { icon, color, titleDef } = iconStyle[type]
+            const { icon, color, titleDef } = iconStyle[type];
 
             const isClose = isCloseAlerts[id]
             const IconClose = (

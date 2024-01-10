@@ -14,7 +14,8 @@ export default merge({
         },
         attempt: {
             duration: 900,
-            limit: 5
+            limit: 5,
+            enableCaptcha: 3
         }
     },
     db: {

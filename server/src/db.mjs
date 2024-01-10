@@ -144,7 +144,7 @@ class QueryBuilder {
 		if (value[0] === '`' && value[1] === '`' || !this.escape) {
 			return value.slice(2);
 		}
-		value = db.escape(value)
+		return  db.escape(value)
 
 		//return value //typeof value === 'string' ? '\'' + value + '\'' : value
 	}
@@ -188,7 +188,7 @@ class QueryBuilder {
 								val = '?'
 								this.safeWhere.push(value[_key])
 							} else {
-								val = value[_key]
+								val = this.#addQuoteIfNeeded(value[_key])
 							}
 
 							return key + _key + val
@@ -263,11 +263,14 @@ class QueryBuilder {
 		  this.#runOrder() +
 		  this.#runLimit()
 		)
-
 		const [data, err] = await this.#runQuery(this._asArray ? {
 			sql,
 			rowsAsArray: true,
 		} : sql)
+
+		if(err){
+			console.error( [sql, err])
+		}
 		return [
 			data ? data[0] : null,
 			err ? [sql, err] : err,
@@ -372,7 +375,9 @@ const createSchema = params => () => {
 	}
 }
 
-export { db, build, createSchema }
+const lastQuery = () => historySQL.at(-1);
+const dateNow = time => '``NOW()'+ (time > 0 ? '+':'')+ time;
+export {build, createSchema, lastQuery, dateNow }
 
 // const suite = new Benchmark.Suite
 //

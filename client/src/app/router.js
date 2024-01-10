@@ -1,5 +1,5 @@
 import {App} from "../app.jsx";
-import AccountLoginPage from "../page/Account/index.jsx";
+import AccountLoginPage from "../page/Account/login/index.jsx";
 import MainPage from "../page/Main/index.js";
 
 const routes = {

@@ -7,5 +7,8 @@ export default {
     },
     notification: {
         limit: 7
+    },
+    captcha: {
+        key:
     }
 }
