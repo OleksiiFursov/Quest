@@ -9,6 +9,6 @@ export default {
         limit: 7
     },
     captcha: {
-        key:
+        key: "6LeogkwpAAAAAGvvlliEp-AoiEJTvtGBFonDu-Jk"
     }
 }
