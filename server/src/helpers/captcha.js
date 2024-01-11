@@ -1,31 +1,20 @@
-const {RecaptchaEnterpriseServiceClient} = require('@google-cloud/recaptcha-enterprise');
+import { RecaptchaEnterpriseServiceClient } from '@google-cloud/recaptcha-enterprise'
+import { getConfig } from '../tools.mjs'
 
-/**
- * Create an assessment to analyze the risk of a UI action.
- *
- * projectID: Your Google Cloud Project ID.
- * recaptchaSiteKey: The reCAPTCHA key associated with the site/app
- * token: The generated token obtained from the client.
- * recaptchaAction: Action name corresponding to the token.
- */
-async function createAssessment({
-	// TODO: Replace the token and reCAPTCHA action variables before running the sample.
-	projectID = "crossfox-quest-1704902007717",
-	recaptchaKey = "6LeogkwpAAAAAGvvlliEp-AoiEJTvtGBFonDu-Jk",
-	token = "action-token",
-	recaptchaAction = "action-name",
-}) {
+export default async function createAssessment(token, recaptchaAction='login') {
+	const conf = getConfig('login.captcha');
+
 	// Create the reCAPTCHA client.
 	// TODO: Cache the client generation code (recommended) or call client.close() before exiting the method.
 	const client = new RecaptchaEnterpriseServiceClient();
-	const projectPath = client.projectPath(projectID);
+	const projectPath = client.projectPath(conf.projectID);
 
 	// Build the assessment request.
 	const request = ({
 		assessment: {
 			event: {
 				token: token,
-				siteKey: recaptchaKey,
+				siteKey: conf.recaptchaKey,
 			},
 		},
 		parent: projectPath,

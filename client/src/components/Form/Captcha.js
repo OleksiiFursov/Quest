@@ -20,7 +20,7 @@ export const getCaptchaToken = () => {
 	return new Promise((resolve, reject) => {
 		try {
 			grecaptcha.enterprise.ready(async () => {
-				resolve(await grecaptcha.enterprise.execute(config.captcha.key, { action: 'LOGIN' }));
+				resolve(await grecaptcha.enterprise.execute(config.captcha.key, { action: 'login' }));
 			});
 		}catch(e){
 			reject(e)

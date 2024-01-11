@@ -16,6 +16,10 @@ export default merge({
             duration: 900,
             limit: 5,
             enableCaptcha: 3
+        },
+        captcha: {
+            projectID: "crossfox-quest-1704902007717",
+            recaptchaKey: "6LeogkwpAAAAAGvvlliEp-AoiEJTvtGBFonDu-Jk"
         }
     },
     db: {

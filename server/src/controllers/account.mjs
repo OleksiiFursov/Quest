@@ -1,5 +1,6 @@
 import usersAttempt from '#model/usersAttempt.js'
 import db, { dateNow, lastQuery } from '../db.mjs'
+import createAssessment from '../helpers/captcha.js'
 import Resp from '../helpers/Resp.mjs'
 import { comparePasswords } from '../helpers/password.mjs'
 import modelUsers from '../model/users.mjs'
@@ -27,7 +28,13 @@ export default {
 		});
 		return Resp.error(error)
 	},
-	async login (context, { username, password }) {
+	async login (context, { username, password, captcha }) {
+
+		// if (!captcha) {
+		// 	return Resp.error('Bad captcha');
+		// }
+		// console.log(await createAssessment(captcha));
+
 		const confAttempt = getConfig('login.attempt');
 
 		const countAttempt = await usersAttempt().count({

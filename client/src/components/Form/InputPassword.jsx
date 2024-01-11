@@ -23,11 +23,4 @@ function InputPassword(props) {
         endDecorator={see ? <VisibilityOffIcon {...eyeProps}/> : <VisibilityIcon {...eyeProps}/>}
     />)
 }
-
-export const ValidatePassword = {
-    require: true,
-    min: 3,
-    max: 40,
-};
-
 export default memo(InputPassword);
