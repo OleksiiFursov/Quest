@@ -3,7 +3,7 @@ import mainController from './controllers/main.mjs'
 import systemController from './controllers/system.mjs'
 import accountController from './controllers/account.mjs'
 import Resp from './helpers/Resp.mjs'
-import { error } from './tools.mjs'
+import { error } from './tools.js'
 
 const controllers = { mainController, systemController, accountController },
   controllerList = Object.values(controllers)
@@ -16,7 +16,7 @@ export const controllersInit = context => {
 	}
 }
 
-async function  runController (context, controllerName, methodName, data = {}) {
+async function runController (context, controllerName, methodName, data = {}) {
 	controllerName += 'Controller'
 	const controller = controllers[controllerName]
 
@@ -24,7 +24,7 @@ async function  runController (context, controllerName, methodName, data = {}) {
 		return context.error('Not found controller: ' + controllerName)
 	}
 	if (!controller[methodName]) {
-		return context.error('Not found method: ' + methodName + ' in controller: ' + controllerName + 'Controller')
+		return context.error('Not found method: ' + methodName + ' in controller: ' + controllerName)
 	}
 
 	try {

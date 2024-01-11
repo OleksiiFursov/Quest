@@ -1,10 +1,10 @@
-import config from '#config.mjs'
+import config from '#config.js'
 import { WebSocketServer } from 'ws'
 import { readFileSync } from 'fs'
 import { nanoid } from 'nanoid'
-import { controllersInit, controllersOn } from '#loader.mjs'
-import { deepClone, formatDate } from '#tools.mjs'
-import db from '#db.mjs'
+import { controllersInit, controllersOn } from '#loader.js'
+import { deepClone, formatDate } from '#tools.js'
+import db from '#db.js'
 
 let options = {}
 if (config.isSSL) {

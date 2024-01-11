@@ -1,5 +1,5 @@
-import configLocal from '#config.local.mjs'
-import {merge} from '#tools.mjs'
+import configLocal from '#config.local.js'
+import {merge} from '#tools.js'
 
 export default merge({
     isDev: true,

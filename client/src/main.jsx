@@ -7,9 +7,9 @@ import createRouter from "./core/Router/index.jsx";
 import reducerMain from "./app/reducer.js";
 import {Provider} from 'react-redux';
 import WSSConnect from './core/WSS'
+import Init from './init..jsx'
 import LoginLayout from "./layouts/login/index.jsx";
 import routes from "./app/router.js";
-import NotificationList from "./app/NotificationList.js";
 
 export const store = configureStore({
     reducer: {
@@ -29,7 +29,7 @@ const layouts = {
 
 render(
     <Provider store={store}>
-        <NotificationList />
+        <Init />
         <Router layouts={layouts}/>
     </Provider>,
     document.getElementById('app')

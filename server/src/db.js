@@ -1,5 +1,5 @@
 import mysql from 'mysql2/promise.js'
-import config from './config.mjs'
+import config from './config.js'
 
 const db = await mysql.createConnection({
 	host: config.db.host,

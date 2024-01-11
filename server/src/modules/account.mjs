@@ -1,4 +1,4 @@
-import { createToken, getConfig } from '#tools.mjs'
+import { createToken, getConfig } from '#tools.js'
 import usersToken from "../model/usersToken.mjs";
 
 

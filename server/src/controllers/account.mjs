@@ -1,11 +1,11 @@
 import usersAttempt from '#model/usersAttempt.js'
-import db, { dateNow, lastQuery } from '../db.mjs'
+import db, { dateNow, lastQuery } from '../db.js'
 import createAssessment from '../helpers/captcha.js'
 import Resp from '../helpers/Resp.mjs'
 import { comparePasswords } from '../helpers/password.mjs'
 import modelUsers from '../model/users.mjs'
 import ModuleAccount from '../modules/account.mjs'
-import { getConfig } from '../tools.mjs'
+import { getConfig } from '../tools.js'
 
 export default {
 	get (context, id) {

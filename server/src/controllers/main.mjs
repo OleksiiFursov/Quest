@@ -1,4 +1,6 @@
-import {formatDate} from "../tools.mjs";
+import Resp from '../helpers/Resp.mjs'
+import {formatDate} from "../tools.js";
+import formValid from "../formValid/index.js";
 
 export default {
     changePage(context, page) {
@@ -9,7 +11,7 @@ export default {
         }
         return true;
     },
-    formValid(context, form) {
-        Resp
+    getFormValid(context) {
+        Resp.success(formValid);
     }
 }

@@ -1,4 +1,4 @@
-import {formatDate, makeSize, merge, normalizeObject} from "../tools.mjs";
+import {formatDate, makeSize, merge, normalizeObject} from "../tools.js";
 
 
 export default {

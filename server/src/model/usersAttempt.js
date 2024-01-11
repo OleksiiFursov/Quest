@@ -1,4 +1,4 @@
-import {createSchema} from '../db.mjs';
+import {createSchema} from '../db.js';
 
 export default createSchema({
     table: 'users_attempt',

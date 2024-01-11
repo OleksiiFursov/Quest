@@ -1,5 +1,5 @@
 import { RecaptchaEnterpriseServiceClient } from '@google-cloud/recaptcha-enterprise'
-import { getConfig } from '../tools.mjs'
+import { getConfig } from '../tools.js'
 
 export default async function createAssessment(token, recaptchaAction='login') {
 	const conf = getConfig('login.captcha');
