@@ -90,6 +90,7 @@ export default function useForm (props = {}) {
 	const SubmitProps = {
 		disabled: !isValid || loading,
 		type: 'submit',
+		loading,
 		onMouseOver: () => {
 			if (isCheck.current) return
 			const errs = {}
