@@ -10,7 +10,7 @@ const getValidateError = {
 	},
 	pattern (value, obj) {
 		const [reg, msg] = validWithMsg(obj, __('Field is not correct'))
-		return !reg.test(value) ? msg : false
+		return !RegExp(reg).test(value) ? msg : false
 	},
 	min (value, obj) {
 		const [min, msg] = validWithMsg(obj, __('Field is too short'))

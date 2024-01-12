@@ -17,8 +17,8 @@ const notification = {
         }));
         id++;
     },
-    error(message, title=null, delayClose = false) {
-        return this.base('error', message, title, {delayClose})
+    error(message, {title=null, delayClose = false, slug=null}={}) {
+        return this.base('error', message, title, {delayClose, slug})
     },
     success(message, title=null) {
         return this.base('success', message, title)

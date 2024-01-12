@@ -12,3 +12,19 @@ export function isDiff(a, b){
 export function ucFirst(word){
     return word[0].toUpperCase()+word.slice(1);
 }
+
+export function debounce(func, delay=300) {
+    let timerId;
+
+    return function (...args) {
+        if (timerId) {
+            clearTimeout(timerId);
+        }
+
+        timerId = setTimeout(() => {
+            func.apply(this, args);
+            timerId = null;
+        }, delay);
+    };
+}
+

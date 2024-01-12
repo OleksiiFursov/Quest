@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'preact/compat'
 import { useRef, useState } from 'preact/hooks'
 import { formValid } from '../components/Form/LoaderValid.js'
 import getValidate from '../components/Form/ValidForm.js'
-import { isDiff, setState } from '../helpers.js'
+import { debounce, isDiff, setState } from '../helpers.js'
 import { Session } from '../core/Storage/index.js'
 
 export default function useForm (props = {}) {
@@ -48,11 +48,14 @@ export default function useForm (props = {}) {
 			touched.current[name] = true
 
 			if (validate[name]) {
-				const error = getValidate(value, validate[name])
+				debounce(()=>{
+					const error = getValidate(value, validate[name])
 
-				if (errors[name] !== error) {
-					setErrors(setState(name, error))
-				}
+					if (errors[name] !== error) {
+						setErrors(setState(name, error))
+					}
+				})()
+
 			}
 
 			setValue(() => setState(name, value)(values))

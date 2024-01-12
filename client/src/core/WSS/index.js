@@ -1,11 +1,17 @@
 import { parseJSON } from '@crossfox/utils'
 import { merge } from 'lodash-es'
+import appState from '../../app/reducer.js'
+import notification from '../../components/Notification/index.jsx'
+import { store } from '../../main.jsx'
 
 let WSSContext = {}
 let isLog = true
+const timeout = 10000
+
+const { removeNotification } = appState.actions
 
 const connector = function (host, onOpen, onError, onClose, reconnect) {
-	console.log('con');
+	console.log('con')
 	try {
 		const ws = new WebSocket(host)
 
@@ -23,6 +29,8 @@ const connector = function (host, onOpen, onError, onClose, reconnect) {
 			if (name === 'req') {
 				const prom = WSSContext.promise
 				const req = prom[data.id]
+				clearTimeout(WSSContext._timeout[data.id])
+				store.dispatch(removeNotification('error-connect'))
 
 				if (req) {
 					req[0](data.data)
@@ -91,13 +99,9 @@ export default function connectSocket (params = {}) {
 		eventID: 0,
 		promise: {},
 		_reDelay: 150,
+		_timeout: {},
 		_timerLast: {},
 		queues: [],
-		onForce (name, callback) {
-			const eventId = this.has(name) || this.events.length
-			this.events[eventId] = { name, callback }
-			return this
-		},
 		on (name, callback, check = true) {
 			if (!check || !~this.has(name, callback)) {
 				this.eventID = this.events.push({ name, callback })
@@ -127,6 +131,12 @@ export default function connectSocket (params = {}) {
 
 			return new Promise((resolve, reject) => {
 				this.promise[this.id] = [resolve, reject]
+				WSSContext._timeout[this.id] = setTimeout(() => {
+					notification.error(
+					  __('Connection issues with the server. Please check your internet connection or refresh the page.'),
+					  { slug: 'error-connect' },
+					)
+				}, timeout)
 				this.emit('req', [
 					path,
 					{
@@ -162,7 +172,7 @@ export default function connectSocket (params = {}) {
 		},
 		runQueue () {
 			setTimeout(() => {
-				isLog && console.log('[WSS] try connecting');
+				isLog && console.log('[WSS] try connecting')
 				while (this.queues.length) {
 					const queue = this.queues.shift()
 					if (!WSSContext.emit(...queue)) break

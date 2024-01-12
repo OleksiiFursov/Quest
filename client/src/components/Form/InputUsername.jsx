@@ -2,8 +2,8 @@ import Input from "./input.jsx";
 import {memo} from "preact/compat";
 import {Person} from "@mui/icons-material";
 
-function InputLogin(props) {
-    const {name = 'login', label = 'Login', value, error, ...rest} = props;
+function InputUsername(props) {
+    const {name = 'username', label = __('Login'), value, error, ...rest} = props;
     return (<Input
         label={label}
         startDecorator={<Person/>}
@@ -14,4 +14,4 @@ function InputLogin(props) {
     />)
 }
 
-export default memo(InputLogin);
+export default memo(InputUsername);

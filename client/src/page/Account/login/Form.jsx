@@ -1,7 +1,9 @@
+import { useDispatch } from 'react-redux'
 import Captcha, { getCaptchaToken } from '../../../components/Form/Captcha.js'
+import { goTo } from '../../../core/Router/index.jsx'
 import useEventSocket from '../../../hooks/useEventSocket.js'
 import useForm from '../../../hooks/useForm.jsx'
-import InputLogin  from '../../../components/Form/InputLogin.jsx'
+import InputLogin  from '../../../components/Form/InputUsername.jsx'
 import InputPassword  from '../../../components/Form/InputPassword.jsx'
 import Button from '../../../components/Form/Button.jsx'
 import notification from '../../../components/Notification/index.jsx'
@@ -10,16 +12,14 @@ import api from '../../../core/Api/index.js'
 const propsForm = {
 	name: 'login',
 	onSubmit: async (values) => {
-		const captcha = await getCaptchaToken()
 		const [status, data] = await api.send('account/login', {
-			username: values.login,
+			username: values.username,
 			password: values.password,
-			captcha
 		})
-		if (status !== 200) {
-			notification.error(data)
+		if (status === 200) {
+			goTo('/main')
 		} else {
-			//
+			notification.error(data)
 		}
 	},
 }
@@ -27,7 +27,7 @@ const propsForm = {
 function AccountLoginForm () {
 	const { FormProps, values, errors, SubmitProps} = useForm(propsForm)
 	return <form {...FormProps}>
-		<InputLogin value={values.login} error={errors.login} autoComplete="off"/>
+		<InputLogin value={values.username} error={errors.username} autoComplete="off"/>
 		<InputPassword value={values.password} error={errors.password}/>
 		<Button {...SubmitProps}>Submit</Button>
 	</form>
