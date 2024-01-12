@@ -10,5 +10,6 @@ export default {
     },
     captcha: {
         key: "6LeogkwpAAAAAGvvlliEp-AoiEJTvtGBFonDu-Jk"
-    }
+    },
+    lang: 'en'
 }
