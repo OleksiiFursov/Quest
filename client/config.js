@@ -1,6 +1,7 @@
 export default {
     wss: {
-        host: 'ws://localhost:9999'
+        host: 'ws://localhost:9999',
+        type: 'msgpack' // msgpack|json
     },
     router: {
         noAuth: 'account/login'

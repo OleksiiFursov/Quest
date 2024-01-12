@@ -1,8 +1,11 @@
 import { parseJSON } from '@crossfox/utils'
+import {encode as msgpackEncode} from 'msgpack-lite';
 import { merge } from 'lodash-es'
+import config from '../../../config.js'
 import appState from '../../app/reducer.js'
 import notification from '../../components/Notification/index.jsx'
 import { store } from '../../main.jsx'
+import typeMessage from '../typeMessage/index.js'
 
 let WSSContext = {}
 let isLog = true
@@ -20,6 +23,7 @@ const { removeNotification } = appState.actions
 const connector = function (host, onOpen, onError, onClose, reconnect) {
 	try {
 		const ws = new WebSocket(host)
+		ws.binaryType = "arraybuffer";
 		ws.onopen = e => {
 			isLog && console.log('[WSS] Connected')
 			WSSContext.context = ws
@@ -31,9 +35,8 @@ const connector = function (host, onOpen, onError, onClose, reconnect) {
 				WSSContext.set(WSSContext.stocks, false)
 			onOpen(e)
 		}
-		ws.onmessage = e => {
-			const { name, data } = parseJSON(e.data)
-
+		ws.onmessage = async e => {
+			const { name, data } = typeMessage.decode( new Uint8Array(e.data))
 			if (name === 'req') {
 				const prom = WSSContext.promise
 				const req = prom[data.id]
@@ -92,6 +95,7 @@ export default function connectSocket (params = {}) {
 		onError = function () {},
 		onClose = function () {},
 		onOpen = function () {},
+	    type = 'msgpack'
 	} = params
 
 	if (WSSContext.context && WSSContext.context.readyState === 1)
@@ -168,7 +172,7 @@ export default function connectSocket (params = {}) {
 			const { readyState, OPEN } = context
 
 			if (readyState !== undefined && readyState === OPEN) {
-				context.send(JSON.stringify({ name, data }))
+				context.send(typeMessage.encode({ name, data }))
 				WSSContext._reDelay = RECONNECT_DELAY
 				return true
 			} else {

@@ -1,9 +1,10 @@
 import config from '#config.js'
+import typeMessage from '#helpers/typeMessage.js'
 import { WebSocketServer } from 'ws'
 import { readFileSync } from 'fs'
 import { nanoid } from 'nanoid'
 import { controllersInit, controllersOn } from '#loader.js'
-import { deepClone, formatDate } from '#tools.js'
+import { deepClone, formatDate, getConfig } from '#tools.js'
 import db from '#db.js'
 
 let options = {}
@@ -46,12 +47,13 @@ const context = nToken => ({
     users: _USERS,
     config: deepClone(config),
     emit (name, data = null, allUsers = false) {
-        const jsonStr = JSON.stringify({ name, data });
+
+        const str = typeMessage.encode({ name, data })
         if (!nToken || allUsers) {
-            all(self => self.wss.send(jsonStr))
+            all(self => self.wss.send(str))
             return this
         }
-        this.wssConnect.send(jsonStr)
+        this.wssConnect.send(str, {binary : true})
         return data
     },
     error (msg) {
@@ -67,7 +69,7 @@ const HandlerOn = (message, name) => {
     controllersOn(context(name), message)
 }
 
-const wss = new WebSocketServer({ port: 9999 })
+const wss = new WebSocketServer({ port: config.wss.port })
 
 const onClose = (ws, nToken, $context) => {
     //ws.off('message', HandlerOn)
@@ -82,7 +84,6 @@ const onClose = (ws, nToken, $context) => {
 
 wss.on('connection', (ws, req) => {
     ws.on('error', console.error)
-
     const nToken = nanoid()
 
     _DATA.stats.allConnect++

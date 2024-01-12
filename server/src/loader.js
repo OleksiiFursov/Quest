@@ -1,9 +1,9 @@
-import { parseJSON } from '@crossfox/utils'
-import mainController from './controllers/main.mjs'
-import systemController from './controllers/system.mjs'
-import accountController from './controllers/account.mjs'
+import mainController from './controllers/main.js'
+import systemController from './controllers/system.js'
+import accountController from './controllers/account.js'
 import Resp from './helpers/Resp.mjs'
 import { error } from './tools.js'
+import typeMessage from './helpers/typeMessage.js';
 
 const controllers = { mainController, systemController, accountController },
   controllerList = Object.values(controllers)
@@ -38,7 +38,7 @@ async function runController (context, controllerName, methodName, data = {}) {
 }
 
 export const controllersOn = async (context, message) => {
-	const { name, data } = parseJSON(message.toString())
+	const { name, data } = typeMessage.decode(message)
 	if (!name) return this
 
 	context.config.isLog && context.notice(data)

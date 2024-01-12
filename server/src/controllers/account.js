@@ -31,6 +31,7 @@ export default {
 	},
 	async login (context, { username, password }) {
 
+		console.log(password);
 		//console.log(sendMail('nodepro777@gmail.com', 'test', 'node forever'));
 
 		// if (!captcha) {

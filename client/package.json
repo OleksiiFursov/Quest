@@ -17,6 +17,7 @@
     "@mui/material": "^5.15.3",
     "@reduxjs/toolkit": "^2.0.1",
     "lodash-es": "^4.17.21",
+    "msgpack-lite": "^0.1.26",
     "preact": "^10.19.3",
     "react-redux": "^9.0.4"
   },
