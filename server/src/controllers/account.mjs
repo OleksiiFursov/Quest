@@ -5,6 +5,7 @@ import Resp from '../helpers/Resp.mjs'
 import { comparePasswords } from '../helpers/password.mjs'
 import modelUsers from '../model/users.mjs'
 import ModuleAccount from '../modules/account.mjs'
+import sendMail from '../modules/sendMail.js'
 import { getConfig } from '../tools.js'
 
 export default {
@@ -28,7 +29,9 @@ export default {
 		});
 		return Resp.error(error)
 	},
-	async login (context, { username, password, captcha }) {
+	async login (context, { username, password }) {
+
+		//console.log(sendMail('nodepro777@gmail.com', 'test', 'node forever'));
 
 		// if (!captcha) {
 		// 	return Resp.error('Bad captcha');

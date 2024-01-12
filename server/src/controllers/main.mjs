@@ -1,6 +1,6 @@
 import Resp from '../helpers/Resp.mjs'
 import {formatDate} from "../tools.js";
-import formValid from "../formValid/index.js";
+import formValid from "../modules/formValid/index.js";
 
 export default {
     changePage(context, page) {

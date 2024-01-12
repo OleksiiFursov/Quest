@@ -6,19 +6,27 @@ import { store } from '../../main.jsx'
 
 let WSSContext = {}
 let isLog = true
-const timeout = 10000
+
+const RECONNECT_DELAY = 150
+const MAX_RECONNECT_DELAY = 3000
+const TIMEOUT_REQUEST = 10000
+
+const changeReconnectDelay = () => {
+	WSSContext._reDelay = Math.min(WSSContext._reDelay * 1.2, MAX_RECONNECT_DELAY)
+}
 
 const { removeNotification } = appState.actions
 
 const connector = function (host, onOpen, onError, onClose, reconnect) {
-	console.log('con')
 	try {
 		const ws = new WebSocket(host)
-
 		ws.onopen = e => {
 			isLog && console.log('[WSS] Connected')
 			WSSContext.context = ws
-			WSSContext._reDelay = 150
+			WSSContext._reDelay = RECONNECT_DELAY
+			if (WSSContext.queues.length) {
+				WSSContext.runQueue()
+			}
 			if (Object.keys(WSSContext.stocks).length)
 				WSSContext.set(WSSContext.stocks, false)
 			onOpen(e)
@@ -61,7 +69,7 @@ const connector = function (host, onOpen, onError, onClose, reconnect) {
 				setTimeout(() => {
 					connector(...arguments)
 					isLog && console.log('[WSS] reconnecting')
-					WSSContext._reDelay = Math.min(WSSContext._reDelay * 1.2, 3000)
+					changeReconnectDelay()
 				}, WSSContext._reDelay)
 			}
 		}
@@ -98,7 +106,7 @@ export default function connectSocket (params = {}) {
 		id: 0,
 		eventID: 0,
 		promise: {},
-		_reDelay: 150,
+		_reDelay: RECONNECT_DELAY,
 		_timeout: {},
 		_timerLast: {},
 		queues: [],
@@ -136,7 +144,7 @@ export default function connectSocket (params = {}) {
 					  __('Connection issues with the server. Please check your internet connection or refresh the page.'),
 					  { slug: 'error-connect' },
 					)
-				}, timeout)
+				}, TIMEOUT_REQUEST)
 				this.emit('req', [
 					path,
 					{
@@ -161,12 +169,11 @@ export default function connectSocket (params = {}) {
 
 			if (readyState !== undefined && readyState === OPEN) {
 				context.send(JSON.stringify({ name, data }))
-				WSSContext._reDelay = 150
+				WSSContext._reDelay = RECONNECT_DELAY
 				return true
 			} else {
 				WSSContext.queues[queuePos]([name, data])
-				WSSContext._reDelay = Math.min(3000, WSSContext._reDelay * 1.2)
-				this.runQueue()
+				changeReconnectDelay()
 				return false
 			}
 		},
@@ -177,7 +184,7 @@ export default function connectSocket (params = {}) {
 					const queue = this.queues.shift()
 					if (!WSSContext.emit(...queue)) break
 				}
-			}, WSSContext._reDelay)
+			}, 50)
 		},
 	}
 
