@@ -10,11 +10,14 @@ export default async function loaderCurrentUser(){
         const [status, data] = await api.send('account/me', {token});
         if(status === 200){
             setCurrentUser(data);
+            console.log(location.pathname);
         }else if(status === 403 || status === 404){
             goTo('account/login');
+            Storage.remove('token');
         }else{
             notification.error('Error');
+            Storage.remove('token');
         }
     }
-    return {}
+    return true
 }

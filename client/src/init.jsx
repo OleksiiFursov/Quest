@@ -9,6 +9,7 @@ import createRouter  from './core/Router/index.jsx'
 import LoginLayout from './layouts/login/index.jsx'
 import DefaultLayout from './layouts/default/index.jsx'
 import loaderCurrentUser from "@/app/loaderCurrentUser.js";
+import useLoader from "@/hooks/useLoader.js";
 
 const Router = createRouter(routes)
 
@@ -18,19 +19,11 @@ const layouts = {
 }
 
 function Init () {
-	const [loading, setLoading] = useState(true);
-	useEffect(() => {
-		(async () => {
-			await Promise.all([
-				loaderMessage(),
-				loaderFormValid(),
-				loaderCurrentUser()
-			]);
-			setLoading(false);
-		})()
-
-	}, [])
-
+	const loading = useLoader([
+		loaderMessage(),
+		loaderFormValid(),
+		loaderCurrentUser()
+	]);
 	return <>
 		<NotificationList/>
 		{loading ? <Loading/> : <Router layouts={layouts}/>}
