@@ -11,7 +11,11 @@ import Init from './init.jsx'
 export const store = configureStore({
     reducer: {
         app: reducerMain.reducer
-    }
+    },
+    middleware: getDefaultMiddleware =>
+        getDefaultMiddleware({
+            serializableCheck: false,
+        }),
 });
 
 

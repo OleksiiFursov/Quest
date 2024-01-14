@@ -15,7 +15,7 @@ const getData = (value, def) => {
     }
     return value;
 }
-const Storage = {
+export const Storage = {
     get(key, def = null) {
         return getData(localStorage[key], def);
     },

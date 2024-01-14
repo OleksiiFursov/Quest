@@ -1,6 +1,3 @@
-import { createSelector } from '@reduxjs/toolkit'
-import { memo } from 'preact/compat'
-
 import { useState } from 'preact/hooks'
 import { useSelector } from 'react-redux'
 import { Alert, IconButton, Typography } from '@mui/joy'
@@ -10,9 +7,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import appState from '@/app/reducer.js'
 import { store } from '@/main.jsx'
 import { setState } from 'src/helpers.js'
-
-const select = (state) => state.app
-const selectNotification = createSelector(select, state => state.notifications)
+import {selectNotification} from "@/app/selector.js";
 
 const iconStyle = {
     error: {

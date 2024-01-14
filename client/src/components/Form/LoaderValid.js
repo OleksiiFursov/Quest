@@ -3,7 +3,7 @@ import notification from '../Notification/index.jsx'
 
 export let formValid = {}
 
-export default async function loadFormValid () {
+export default async function loaderFormValid () {
 	const [status, data] = await api.get('main/formValid');
 	if(status === 200){
 		formValid = data;

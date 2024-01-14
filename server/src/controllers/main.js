@@ -11,7 +11,7 @@ export default {
         }
         return true;
     },
-    getFormValid(context) {
+    async getFormValid(context) {
         return Resp.success(formValid);
     }
 }

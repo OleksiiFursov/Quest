@@ -1,13 +1,13 @@
-import { useDispatch } from 'react-redux'
-import Captcha, { getCaptchaToken } from '../../../components/Form/Captcha.js'
-import { goTo } from '../../../core/Router/index.jsx'
-import useEventSocket from '../../../hooks/useEventSocket.js'
+import { goTo } from '@/core/Router/index.jsx'
 import useForm from '../../../hooks/useForm.jsx'
 import InputLogin  from '../../../components/Form/InputUsername.jsx'
 import InputPassword  from '../../../components/Form/InputPassword.jsx'
 import Button from '../../../components/Form/Button.jsx'
 import notification from '../../../components/Notification/index.jsx'
 import api from '../../../core/Api/index.js'
+import {store} from "@/main.jsx";
+import Storage from "@/core/Storage/index.js";
+import {setCurrentUser} from "@/app/actions.js";
 
 const propsForm = {
 	name: 'login',
@@ -17,7 +17,9 @@ const propsForm = {
 			password: values.password,
 		})
 		if (status === 200) {
-			goTo('/main')
+			Storage.set('token', data.token);
+			store.dispatch(setCurrentUser(data))
+			goTo('main')
 		} else {
 			notification.error(data)
 		}

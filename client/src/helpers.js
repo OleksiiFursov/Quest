@@ -47,3 +47,11 @@ export function getConfig(path, def={}){
     return current
 }
 
+export function map(obj, call){
+    const res = {};
+    for(const key in obj){
+        res[key] = call(obj[key], key);
+    }
+    return res;
+}
+

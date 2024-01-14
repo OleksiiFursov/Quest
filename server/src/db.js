@@ -6,7 +6,14 @@ const db = await mysql.createConnection({
 	user: config.db.user,
 	password: config.db.password,
 	database: config.db.name,
-})
+});
+db.connect(function (err) {
+	if (err) {
+		console.log(`connectionRequest Failed ${err.stack}`)
+	} else {
+		console.log(`DB connectionRequest Successful ${connection.threadId}`)
+	}
+});
 
 const operatorAlias = {
 	NIN: 'NOT IN',
@@ -150,11 +157,10 @@ class QueryBuilder {
 	}
 
 	generateWhereItem (conditions, operatorJoin = 'AND') {
-
 		let res = ''
 		for (const key in conditions) {
 			if (key === 'and' || key === 'or') {
-				const lastChar = res.at(-1)
+				const lastChar = res.at(-1);
 				res += (lastChar === undefined || lastChar === ' ' ? '' : ' ' + operatorJoin + ' ') + conditions[key].map(v => '(' + this.generateWhereItem(v) + ')').join(' ' + key.toUpperCase() + ' ')
 				continue
 			}
@@ -182,7 +188,7 @@ class QueryBuilder {
 						value = this.#addQuoteIfNeeded(value.toString().slice(1, -1))
 						operator = 'REGEXP'
 					} else if (['!=', '<>', '>', '<', '>=', '<='].includes(keys[0])) {
-						res += '(' + keys.map(_key => {
+						res += (res.length ? ' '+operatorJoin+' ':'') + '(' + keys.map(_key => {
 							let val
 							if (this.safe) {
 								val = '?'

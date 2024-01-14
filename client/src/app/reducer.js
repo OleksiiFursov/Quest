@@ -4,15 +4,15 @@ const appState = createSlice({
     name: 'app',
     initialState: {
         token: null,
+        currentUser: {},
         notifications: [],
     },
     reducers: {
         setToken: (state, value) => {
-            // Redux Toolkit allows us to write "mutating" logic in reducers. It
-            // doesn't actually mutate the state because it uses the Immer library,
-            // which detects changes to a "draft state" and produces a brand new
-            // immutable state based off those changes
             state.token = value
+        },
+        setCurrentUser: (state, { payload }) => {
+            state.currentUser = payload
         },
         setNotification: (state, { payload }) => {
             state.notifications.push(payload)
@@ -23,5 +23,7 @@ const appState = createSlice({
         },
     },
 })
+
+
 
 export default appState

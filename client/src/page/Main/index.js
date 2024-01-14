@@ -1,5 +1,13 @@
+import {createSelector} from "@reduxjs/toolkit";
+import {useSelector} from "react-redux";
+
+const select = (state) => state.app
+const selectNotification = createSelector(select, state => state.currentUser)
+
 function mainPage(){
-    return 1;
+    const currentUser = useSelector(selectNotification);
+    console.log(currentUser);
+    return currentUser.username;
 
 }
 

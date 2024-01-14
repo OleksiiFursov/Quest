@@ -1,19 +1,33 @@
 import usersAttempt from '#model/usersAttempt.js'
-import db, { dateNow, lastQuery } from '../db.js'
-import createAssessment from '../helpers/captcha.js'
+import {dateNow, lastQuery} from '../db.js'
 import Resp from '../helpers/Resp.mjs'
 import { comparePasswords } from '../helpers/password.mjs'
 import modelUsers from '../model/users.mjs'
 import ModuleAccount from '../modules/account.mjs'
-import sendMail from '../modules/sendMail.js'
 import { getConfig } from '../tools.js'
+import usersToken from "#model/usersToken.mjs";
+import users from "#schemas/users.js";
 
 export default {
 	get (context, id) {
 
 	},
-	me ({ state }) {
-		if (state.token) {
+	async me (context, { token }) {
+		const confExpires = getConfig('login.token.expires');
+		if (token) {
+			context.state.token = token;
+			const id = await usersToken().column('user_id',{token, date_expires: {'>':dateNow(-confExpires)}});
+			if(!id){
+				return Resp.error('Token not found',403);
+			}else{
+				const currentUser = await users().findOne({id});
+				if(!currentUser){
+					return Resp.error('Not found user',404);
+				}else{
+					return Resp.success(currentUser);
+				}
+
+			}
 
 		}
 	},
@@ -75,12 +89,14 @@ export default {
 
 
 		if (await comparePasswords(password, userCurrent.password)) {
-			context.state.user_id = userCurrent.id
+			context.state.user_id = userCurrent.id;
+
 			const token = await ModuleAccount.createToken(context)
 			delete userCurrent.password
 
 			if (token) {
-				context.emit('login.captcha', false)
+				context.emit('login.captcha', false);
+				context.state.token = token;
 				return Resp.success({
 					token,
 					...userCurrent,
