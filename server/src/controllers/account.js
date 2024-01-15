@@ -1,12 +1,13 @@
-import usersAttempt from '#model/usersAttempt.js'
-import {dateNow, lastQuery} from '../db.js'
+import ModelUsersAttempt from '#model/usersAttempt.js'
+import {dateNow} from '../db.js'
 import Resp from '../helpers/Resp.mjs'
 import { comparePasswords } from '../helpers/password.mjs'
-import modelUsers from '../model/users.mjs'
 import ModuleAccount from '../modules/account.mjs'
+import getValidate from '../modules/formValid/formValid.js'
 import { getConfig } from '../tools.js'
-import usersToken from "#model/usersToken.mjs";
-import users from "#schemas/users.js";
+import ModelUsersToken from "#model/usersToken.mjs";
+import ModelUsers from "#schemas/users.js";
+import FormValidUserLogin from "../modules/formValid/form/login.js"
 
 export default {
 	get (context, id) {
@@ -16,58 +17,54 @@ export default {
 		const confExpires = getConfig('login.token.expires');
 		if (token) {
 			context.state.token = token;
-			const id = await usersToken().column('user_id',{token, date_expires: {'>':dateNow(-confExpires)}});
+			const id = await ModelUsersToken().column('user_id',{token, date_expires: {'>':dateNow(-confExpires)}});
 			if(!id){
 				return Resp.error('Token not found',403);
 			}else{
-				const currentUser = await users().findOne({id});
+				const currentUser = await ModelUsers().findOne({id});
 				if(!currentUser){
 					return Resp.error('Not found user',404);
 				}else{
 					return Resp.success(currentUser);
 				}
-
 			}
-
 		}
 	},
-	async checkToken (context, token) {
-		console.log(ModuleAccount.checkToken(context, token))
-	},
-
 	_loginAttempt (context, username, error) {
-		usersAttempt().insert({
+		ModelUsersAttempt().insert({
 			username,
 			ip: context.currentUser.ip,
 			user_agent: context.currentUser.userAgent,
 		});
 		return Resp.error(error)
 	},
-	async login (context, { username, password }) {
+	async login (context, values) {
 		//console.log(sendMail('nodepro777@gmail.com', 'test', 'node forever'));
 
 		// if (!captcha) {
 		// 	return Resp.error('Bad captcha');
 		// }
 		// console.log(await createAssessment(captcha));
+		const {username, password} = values;
 
 		const confAttempt = getConfig('login.attempt');
 
-		const countAttempt = await usersAttempt().count({
+		const countAttempt = await ModelUsersAttempt().count({
 			date_created: {'>':dateNow(-confAttempt.duration)},
 			username,
-		})
+		});
 
 		if (countAttempt >= confAttempt.limit) {
 			return Resp.error('Many unsuccessful login attempts have been made, please try again later.', 403)
 		}
 
-		// IS EMPTY:
-		if (!username) {
-			return this._loginAttempt(context, username,'Username is empty');
-		}
-		if (!password) {
-			return this._loginAttempt(context, username,'Password is empty')
+
+		for(const key of ['username', 'password']){
+			let errorMessage = getValidate(values[key], FormValidUserLogin[key], values);
+			if(errorMessage){
+				return this._loginAttempt(context, username, errorMessage);
+			}
+
 		}
 
 		//CHECK ENABLED CAPTCHA
@@ -77,11 +74,7 @@ export default {
 			context.emit('login.enableCaptcha', true)
 		}
 
-		// CHECK USERNAME:
-		if (username.length < 3) {
-			return this._loginAttempt(context, username,'Username is too short')
-		}
-		const userCurrent = await modelUsers().findOne({ username })
+		const userCurrent = await ModelUsers().findOne({ username })
 		if (!userCurrent) {
 			return this._loginAttempt(context, username,'Login or password is not correct')
 		}

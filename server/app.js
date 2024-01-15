@@ -1,10 +1,11 @@
 import config from '#config.js'
 import typeMessage from '#helpers/typeMessage.js'
+import '#helpers/Message.js'
 import { WebSocketServer } from 'ws'
 import { readFileSync } from 'fs'
 import { nanoid } from 'nanoid'
 import { controllersInit, controllersOn } from '#loader.js'
-import { deepClone, formatDate, getConfig } from '#tools.js'
+import { deepClone, formatDate } from '#tools.js'
 import db from '#db.js'
 
 let options = {}
@@ -35,6 +36,7 @@ const storeInit = () => ({
 })
 
 const all = callback => Object.values(_USERS).forEach(callback)
+
 
 const context = nToken => ({
     nToken,

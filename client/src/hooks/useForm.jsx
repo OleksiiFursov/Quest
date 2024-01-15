@@ -31,7 +31,7 @@ export default function useForm (props = {}) {
 			const error = errors[key]
 			if (error === undefined) {
 				if (!touched.current[key]) {
-					const errorMsg = getValidate(values[key], validate[key])
+					const errorMsg = getValidate(values[key], validate[key], values)
 					if (errorMsg) return false
 					setErrors(setState(key, errorMsg))
 				}
@@ -49,7 +49,7 @@ export default function useForm (props = {}) {
 
 			if (validate[name]) {
 				debounce(()=>{
-					const error = getValidate(value, validate[name])
+					const error = getValidate(value, validate[name], values)
 
 					if (errors[name] !== error) {
 						setErrors(setState(name, error))
@@ -67,7 +67,7 @@ export default function useForm (props = {}) {
 			e.preventDefault()
 			const errs = {}
 			for (const key in validate) {
-				const error = getValidate(values[key], validate[key])
+				const error = getValidate(values[key], validate[key], values)
 				if (error)
 					errors[key] = error
 			}
@@ -95,7 +95,7 @@ export default function useForm (props = {}) {
 			if (isCheck.current) return
 			const errs = {}
 			for (const key in validate) {
-				errs[key] = getValidate(values[key], validate[key])
+				errs[key] = getValidate(values[key], validate[key], values)
 			}
 			if (isDiff(errors, errs))
 				setErrors(errors)
@@ -114,7 +114,7 @@ export default function useForm (props = {}) {
 		loading,
 		setValue: (name, value, isValid = true) => {
 			if (isValid) {
-				setErrors(setState(name, getValidate(value, validate[name])))
+				setErrors(setState(name, getValidate(value, validate[name], values)))
 			}
 
 			setValue(setState(name, value))

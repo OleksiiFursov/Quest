@@ -1,19 +1,13 @@
 import mysql from 'mysql2/promise.js'
 import config from './config.js'
 
-const db = await mysql.createConnection({
+const db = mysql.createPool({
 	host: config.db.host,
 	user: config.db.user,
 	password: config.db.password,
 	database: config.db.name,
 });
-db.connect(function (err) {
-	if (err) {
-		console.log(`connectionRequest Failed ${err.stack}`)
-	} else {
-		console.log(`DB connectionRequest Successful ${connection.threadId}`)
-	}
-});
+
 
 const operatorAlias = {
 	NIN: 'NOT IN',
@@ -340,7 +334,7 @@ const build = () => {
 	}
 }
 
-const createSchema = params => () => {
+const createSchema = params => {
 	const q = build().from(params.table)
 	return {
 		async has (where) {
@@ -381,7 +375,8 @@ const createSchema = params => () => {
 	}
 }
 
-const lastQuery = () => historySQL.at(-1);
+let lastQuery = () => historySQL.at(-1);
+global.lastQuery = lastQuery;
 const dateNow = time => '``NOW()'+ (time > 0 ? '+':'')+ time;
 export {build, createSchema, lastQuery, dateNow }
 

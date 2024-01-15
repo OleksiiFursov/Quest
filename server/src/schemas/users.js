@@ -1,9 +1,11 @@
 import {createSchema} from '../db.js';
-export default createSchema({
-    table: 'users',
-    columns: {
-        id: []
+export default function ModelUsers(){
+    return createSchema({
+        table: 'users',
+        columns: {
+            id: []
 
 
-    }
-})
+        }
+    })
+}
