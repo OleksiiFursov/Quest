@@ -1,7 +1,4 @@
-import { parseJSON } from '@crossfox/utils'
-import {encode as msgpackEncode} from 'msgpack-lite';
 import { merge } from 'lodash-es'
-import config from '../../../config.js'
 import appState from '../../app/reducer.js'
 import notification from '../../components/Notification/index.jsx'
 import { store } from '../../main.jsx'
@@ -95,7 +92,6 @@ export default function connectSocket (params = {}) {
 		onError = function () {},
 		onClose = function () {},
 		onOpen = function () {},
-	    type = 'msgpack'
 	} = params
 
 	if (WSSContext.context && WSSContext.context.readyState === 1)
@@ -167,7 +163,7 @@ export default function connectSocket (params = {}) {
 			this._timerLast[name] = setTimeout(() => this.set(data), timeout)
 			return this
 		},
-		emit (name, data, queuePos = 'push') {
+		emit (name, data) {
 			const context = WSSContext.context || {}
 			const { readyState, OPEN } = context
 
@@ -176,14 +172,13 @@ export default function connectSocket (params = {}) {
 				WSSContext._reDelay = RECONNECT_DELAY
 				return true
 			} else {
-				WSSContext.queues[queuePos]([name, data])
+				WSSContext.queues.push([name, data])
 				changeReconnectDelay()
 				return false
 			}
 		},
 		runQueue () {
 			setTimeout(() => {
-				isLog && console.log('[WSS] try connecting')
 				while (this.queues.length) {
 					const queue = this.queues.shift()
 					if (!WSSContext.emit(...queue)) break
