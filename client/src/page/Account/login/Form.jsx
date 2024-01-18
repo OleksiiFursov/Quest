@@ -1,4 +1,5 @@
 import { goTo } from '@/core/Router/index.jsx'
+import { crop } from '../../../helpers.js'
 import useForm from '../../../hooks/useForm.jsx'
 import InputLogin from '../../../components/Form/InputUsername.jsx'
 import InputPassword from '../../../components/Form/InputPassword.jsx'
@@ -12,10 +13,7 @@ import { setCurrentUser } from '@/app/actions.js'
 const propsForm = {
 	name: 'login',
 	onSubmit: async (values) => {
-		const [status, data] = await api.send('account/login', {
-			username: values.username,
-			password: values.password,
-		})
+		const [status, data] = await api.send('account/login', crop(values, ['username', 'password']))
 		if (status === 200) {
 			Storage.set('token', data.token)
 			store.dispatch(setCurrentUser(data))

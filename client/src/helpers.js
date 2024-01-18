@@ -15,6 +15,14 @@ export function ucFirst(word){
     return word[0].toUpperCase()+word.slice(1);
 }
 
+export function crop(obj, keys){
+    const res = {};
+    for(const key in keys){
+        res[key] = obj[key];
+    }
+    return res;
+}
+
 export function error(msg, obj=[]){
     console.error(msg, obj);
 }

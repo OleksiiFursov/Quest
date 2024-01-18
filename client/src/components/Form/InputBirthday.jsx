@@ -1,17 +1,17 @@
-import Input from "./input.jsx";
-import {memo} from "preact/compat";
-import {Person} from "@mui/icons-material";
+import Input from './input.jsx'
+import { memo } from 'preact/compat'
+import { Person } from '@mui/icons-material'
+import InputDate from './InputDate.js'
 
-function InputUsername(props) {
-    const {name = 'username', label = __('Login'), value, error, ...rest} = props;
-    return (<Input
-        label={label}
-        startDecorator={<Person/>}
-        name={name}
-        error={error}
-        value={value}
-        {...rest}
-    />)
+function InputBirthday (props) {
+	const { name = 'birthday', label = __('Birthday'), value, error, ...rest } = props
+	return (<InputDate
+	  name={name}
+      label={label}
+      value={value}
+      erorr={error}
+      {...rest}
+	/>)
 }
 
-export default memo(InputUsername);
+export default memo(InputBirthday)

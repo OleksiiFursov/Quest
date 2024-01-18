@@ -6,7 +6,7 @@ function AccountLoginPage() {
     useEffect(()=>{
 
     }, []);
-    return (<div className="login-form-wrap">
+    return (<div className="account-login-form-wrap">
         <H2>Sign in</H2>
         <AccountLoginForm/>
     </div>);

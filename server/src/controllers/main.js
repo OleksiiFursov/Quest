@@ -1,6 +1,5 @@
 import Resp from '../helpers/Resp.mjs'
-import {formatDate} from "../tools.js";
-import formValid from "../modules/formValid/index.js";
+import { formatDate, importFolder } from '../tools.js'
 
 export default {
     changePage(context, page) {
@@ -12,6 +11,6 @@ export default {
         return true;
     },
     async getFormValid(context) {
-        return Resp.success(formValid);
+        return Resp.success(await importFolder('/src/modules/formValid/form'));
     }
 }
