@@ -1,6 +1,6 @@
 import { readdirSync } from 'fs'
-import path from 'path'
-import { join, parse } from 'path'
+import { dirname } from 'path'
+import { parse } from 'path'
 import { fileURLToPath } from 'url'
 import config from './config.js'
 
@@ -45,32 +45,6 @@ export function formatDate (ms) {
 	return f(ms.getFullYear()) + '-' + f(ms.getMonth()) + '-' + f(ms.getDate()) + ' ' +
 	  f(ms.getHours()) + ':' + f(ms.getMinutes()) + ':' + f(ms.getSeconds())
 
-}
-
-export function makeDate (date) {
-	date = date / 1000 >> 0
-
-	const buf = []
-	if (date > 86400) {
-		buf.push(((date / 86400) >> 0) + 'd')
-	}
-	if (date > 3600) {
-		const _t = (date / 3600) % 24 >> 0
-		if (_t) {
-			buf.push(_t + 'h')
-		}
-	}
-	if (date > 60) {
-		const _t = (date / 60) % 60 >> 0
-		if (_t) {
-			buf.push(_t + 'm')
-		}
-	}
-	const _t = date % 60
-	if (_t) {
-		buf.push(_t + 's')
-	}
-	return buf.join(' ') || 'just'
 }
 
 export function makeSize (bytes) {
@@ -130,28 +104,24 @@ export function error (msg) {
 	console.error(msg)
 }
 
+export function getCurrentDirectory(path){
+	const __filename = fileURLToPath(path || import.meta.url)
+	return dirname(__filename);
+}
 export async function importFolder (pathFolder) {
-	const __filename = fileURLToPath(import.meta.url)
-	const __dirname = path.dirname(__filename)
-
-	// Функция для импорта всех файлов из директории
 	const filesData = {}
 
-	// Импорт всех файлов из директории
 	const files = readdirSync(pathFolder)
 
-	// Обработка каждого файла
-	for (const file of files) {
-		// Получение полного пути к файлу
-		const filePath = join(pathFolder, file)
-
-		// Использование названия файла в качестве ключа
-		const fileName = parse(file).name
-
-		// Импорт файла и добавление его в объект
-		filesData[fileName] = await import(pathFolder + file) // Пример чтения содержимого файла
+	if (process.platform === 'win32') {
+		pathFolder ='file://' + pathFolder;
 	}
 
+	for (const file of files) {
+		const fileName = parse(file).name
+
+		filesData[fileName] = await import(pathFolder +'/'+ file) // Пример чтения содержимого файла
+	}
 	return filesData
 
 }

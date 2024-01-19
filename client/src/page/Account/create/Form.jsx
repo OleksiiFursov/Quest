@@ -24,7 +24,6 @@ const propsForm = {
 		}
 	},
 }
-
 function AccountLoginForm () {
 	const { FormProps, values, errors, SubmitProps} = useForm(propsForm)
 	return <form {...FormProps}>
