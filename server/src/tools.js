@@ -108,7 +108,7 @@ export function getCurrentDirectory(path){
 	const __filename = fileURLToPath(path || import.meta.url)
 	return dirname(__filename);
 }
-export async function importFolder (pathFolder) {
+export async function importFolder (pathFolder, method) {
 	const filesData = {}
 
 	const files = readdirSync(pathFolder)
@@ -119,8 +119,11 @@ export async function importFolder (pathFolder) {
 
 	for (const file of files) {
 		const fileName = parse(file).name
-
-		filesData[fileName] = await import(pathFolder +'/'+ file) // Пример чтения содержимого файла
+		let imp =  await import(pathFolder +'/'+ file);
+		if(method){
+			imp = imp[method];
+		}
+		filesData[fileName] = imp// Пример чтения содержимого файла
 	}
 	return filesData
 

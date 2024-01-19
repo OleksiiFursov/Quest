@@ -1,3 +1,5 @@
+import { error } from '../../helpers.js'
+
 const validWithMsg = (valid, msg) => Array.isArray(valid) ? valid : [valid, msg]
 
 const getValidateError = {
@@ -25,11 +27,16 @@ const getValidateError = {
 
 export default function getValidate (value, rule, values) {
 	value = value || ''
-	for (const key in rule) {
-		const error = getValidateError[key](value, rule[key], values)
-		if (error) {
-			return error
+	try {
+		for (const key in rule) {
+
+			const error = getValidateError[key](value, rule[key], values)
+			if (error) {
+				return error
+			}
 		}
+	}catch(e){
+		error(e)
 	}
 	return ''
 }

@@ -9,6 +9,7 @@ export default function useForm (props = {}) {
 	const { initial = {}, onSubmit } = props
 	const nameForm = props.name || ''
 
+	console.log(formValid);
 	const validate = formValid[nameForm] || {};
 
 	const [values, setValue] = useState(initial)
