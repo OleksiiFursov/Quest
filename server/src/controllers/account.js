@@ -7,7 +7,7 @@ import getValidate from '../modules/formValid/formValid.js'
 import { getConfig } from '../tools.js'
 import ModelUsersToken from "#model/usersToken.mjs";
 import ModelUsers from "#schemas/users.js";
-import FormValidUserLogin from "../modules/formValid/form/login.js"
+import FormValidUserLogin from "../modules/formValid/form/accountLogin.js"
 
 export default {
 	get (context, id) {

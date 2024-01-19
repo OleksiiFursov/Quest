@@ -9,3 +9,15 @@
   display: none;
 }
 
+.flex{
+  display: flex;
+  align-items: center;
+}
+.flex-between{
+  @extend .flex;
+  justify-content: space-between;
+}
+.flex-gap-1{
+  @extend .flex;
+  gap: 1rem
+}

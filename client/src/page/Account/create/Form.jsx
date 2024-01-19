@@ -1,5 +1,6 @@
 import { goTo } from '@/core/Router/index.jsx'
 import InputBirthday from '../../../components/Form/InputBirthday.jsx'
+import InputGender from '../../../components/Form/InputGender.js'
 import { crop } from '../../../helpers.js'
 import useForm from '../../../hooks/useForm.jsx'
 import InputLogin  from '../../../components/Form/InputUsername.jsx'
@@ -14,7 +15,9 @@ import {setCurrentUser} from "@/app/actions.js";
 const propsForm = {
 	name: 'accountCreate',
 	onSubmit: async (values) => {
-		const [status, data] = await api.send('account/login', crop(values, ['username', 'password']))
+		const [status, data] = await api.send('account/create', crop(values,
+		  ['username', 'password', 'birthday', 'gender']
+		))
 		if (status === 200) {
 			Storage.set('token', data.token);
 			store.dispatch(setCurrentUser(data))
@@ -29,8 +32,9 @@ function AccountLoginForm () {
 	return <form {...FormProps}>
 		<InputLogin value={values.username} error={errors.username} autoComplete="off"/>
 		<InputPassword value={values.password} error={errors.password}/>
-		<InputPassword value={values.password2} error={errors.password2}/>
+		<InputPassword value={values.password2} error={errors.password2} confirm />
 		<InputBirthday value={values.birthday} error={errors.birthday}/>
+		<InputGender value={values.gender} error={errors.gender} />
 		<Button {...SubmitProps}>Submit</Button>
 	</form>
 

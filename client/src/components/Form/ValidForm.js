@@ -21,6 +21,7 @@ const getValidateError = {
 	},
 	check (value, obj, values) {
 		const [call, msg] = validWithMsg(obj, __('Field is not correct'))
+		new
 		return call(value, values) && msg
 	},
 }

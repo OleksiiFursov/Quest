@@ -6,7 +6,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import { useState } from 'preact/hooks'
 
 function InputPassword (props) {
-	const { name = 'password', label = __('Password'), value, error } = props
+	const { name = 'password', label = __('Password'), value, error, confirm} = props
 	const [see, setSee] = useState(false)
 	const eyeProps = {
 		onClick: () => setSee(v => !v),
@@ -15,7 +15,7 @@ function InputPassword (props) {
 
 	return (<Input
 	  startDecorator={<Key/>}
-	  name={name}
+	  name={name + (confirm?'2':'')}
 	  type={see ? 'text' : 'password'}
 	  error={error}
 	  label={label}

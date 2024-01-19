@@ -1,5 +1,6 @@
-import {username, password} from '../items.js';
+import { username, password, birthday, email, gender, password2 } from '../items.js'
 
 export default {
-	username, password
+	username, password, password2, birthday, email, gender,
 }
+

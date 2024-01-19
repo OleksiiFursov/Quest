@@ -128,3 +128,15 @@ export async function importFolder (pathFolder, method) {
 	return filesData
 
 }
+
+
+export function sendNormalized(obj){
+	for(const key in obj){
+		if(typeof obj[key] === 'function'){
+			obj[key] = obj[key].toString();
+		}else if(typeof obj[key] === 'object'){
+			sendNormalized(obj[key]);
+		}
+	}
+	return obj;
+}

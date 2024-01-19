@@ -1,5 +1,10 @@
 import Resp from '../helpers/Resp.mjs'
-import { formatDate, getCurrentDirectory, importFolder } from '../tools.js'
+import {
+    formatDate,
+    getCurrentDirectory,
+    importFolder,
+    sendNormalized,
+} from '../tools.js'
 
 export default {
     changePage(context, page) {
@@ -11,6 +16,7 @@ export default {
         return true;
     },
     async getFormValid() {
-        return Resp.success(await importFolder(getCurrentDirectory()+'/modules/formValid/form', 'default'));
+        const imports = await importFolder(getCurrentDirectory()+'/modules/formValid/form', 'default');
+        return Resp.success(sendNormalized(imports));
     }
 }

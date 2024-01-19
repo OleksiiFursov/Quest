@@ -1,4 +1,4 @@
-import { goTo } from '@/core/Router/index.jsx'
+import { goTo, Link } from '@/core/Router/index.jsx'
 import { crop } from '../../../helpers.js'
 import useForm from '../../../hooks/useForm.jsx'
 import InputLogin from '../../../components/Form/InputUsername.jsx'
@@ -30,7 +30,13 @@ function AccountLoginForm () {
 	return <form {...FormProps}>
 		<InputLogin value={values.username} error={errors.username} autoComplete="off"/>
 		<InputPassword value={values.password} error={errors.password}/>
-		<Button {...SubmitProps} />
+		<div className="flex-between">
+			<Link to="account/create">{__('Create account')}</Link>
+			<div className="flex-gap-1">
+				<Link to="account/reset">{__('Remind password')}</Link>
+				<Button {...SubmitProps} />
+			</div>
+		</div>
 	</form>
 
 }
