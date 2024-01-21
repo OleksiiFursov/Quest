@@ -1,6 +1,9 @@
-import { username, password, birthday, email, gender, password2 } from '../items.js'
+import {username, password, birthday, email, gender, password2} from '../items.js'
 
 export default {
-	username, password, password2, birthday, email, gender,
+    username: {
+        ...username,
+        afterCheck: 'accountCreate_username'
+    }, password, password2, birthday, email, gender,
 }
 

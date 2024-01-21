@@ -1,5 +1,5 @@
 import { memo } from 'preact/compat'
-import InputRadio from './InputRadio.js'
+import InputRadio from './InputRadio.jsx'
 
 const GenderSelection = (props) => {
 	const { error, value, label, className, ...rest } = props

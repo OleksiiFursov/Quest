@@ -1,11 +1,12 @@
 import mainController from './controllers/main.js'
 import systemController from './controllers/system.js'
 import accountController from './controllers/account.js'
+import formValidController from "#controllers/formValid.js";
 import Resp from './helpers/Resp.mjs'
 import { error } from './tools.js'
 import typeMessage from './helpers/typeMessage.js';
 
-const controllers = { mainController, systemController, accountController },
+const controllers = { mainController, systemController, accountController, formValidController },
   controllerList = Object.values(controllers)
 
 export const controllersInit = context => {

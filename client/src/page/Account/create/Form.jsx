@@ -1,6 +1,6 @@
 import { goTo } from '@/core/Router/index.jsx'
 import InputBirthday from '../../../components/Form/InputBirthday.jsx'
-import InputGender from '../../../components/Form/InputGender.js'
+import InputGender from '../../../components/Form/InputGender.jsx'
 import { crop } from '../../../helpers.js'
 import useForm from '../../../hooks/useForm.jsx'
 import InputLogin  from '../../../components/Form/InputUsername.jsx'

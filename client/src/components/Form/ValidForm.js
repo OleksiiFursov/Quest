@@ -1,4 +1,5 @@
-import { error } from '../../helpers.js'
+import { error } from '@/helpers.js'
+import api from "@/core/Api/index.js";
 
 const validWithMsg = (valid, msg) => Array.isArray(valid) ? valid : [valid, msg]
 
@@ -20,10 +21,14 @@ const getValidateError = {
 		return value.length > max && msg
 	},
 	check (value, obj, values) {
-		const [call, msg] = validWithMsg(obj, __('Field is not correct'))
-		new
-		return call(value, values) && msg
+		let [call, msg] = validWithMsg(obj, __('Field is not correct'))
+		call = new Function('return '+call)();
+		return !call(value, values) && msg
 	},
+	async afterCheck(value, obj, values){
+		let [req, msg] = validWithMsg(obj, __('Field is not correct'));
+		return await api.send('formValid/'+req, {value, values})
+	}
 }
 
 export default function getValidate (value, rule, values) {

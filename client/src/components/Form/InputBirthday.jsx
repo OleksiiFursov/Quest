@@ -1,7 +1,7 @@
 import Input from './input.jsx'
 import { memo } from 'preact/compat'
 import { Person } from '@mui/icons-material'
-import InputDate from './InputDate.js'
+import InputDate from './InputDate.jsx'
 
 function InputBirthday (props) {
 	const { name = 'birthday', label = __('Birthday'), value, error, ...rest } = props
