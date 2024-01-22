@@ -22,10 +22,10 @@ async function runController (context, controllerName, methodName, data = {}) {
 	const controller = controllers[controllerName]
 
 	if (!controller) {
-		return context.error('Not found controller: ' + controllerName)
+		return error('Not found controller: ' + controllerName)
 	}
 	if (!controller[methodName]) {
-		return context.error('Not found method: ' + methodName + ' in controller: ' + controllerName)
+		return error('Not found method: ' + methodName + ' in controller: ' + controllerName)
 	}
 
 	try {
@@ -34,6 +34,7 @@ async function runController (context, controllerName, methodName, data = {}) {
 		error('runController: ' + controllerName + '.' + methodName + ' - ' + JSON.stringify(result))
 		return Resp.error('Error on the server. We are already aware of the problem and are working to fix it')
 	} catch (error) {
+		console.log(error);
 		return context.error('Error in method ' + methodName + ': ' + error)
 	}
 }

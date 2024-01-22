@@ -49,6 +49,7 @@ export default {
 
 		const confAttempt = getConfig('login.attempt');
 
+
 		const countAttempt = await ModelUsersAttempt().count({
 			date_created: {'>':dateNow(-confAttempt.duration)},
 			username,
@@ -58,11 +59,10 @@ export default {
 			return Resp.error('Many unsuccessful login attempts have been made, please try again later.', 403)
 		}
 
-
 		for(const key of ['username', 'password']){
 			let errorMessage = getValidate(values[key], FormValidUserLogin[key], values);
 			if(errorMessage){
-				return this._loginAttempt(context, username, errorMessage);
+				return this._loginAttempt(context, username, key+': '+errorMessage);
 			}
 
 		}

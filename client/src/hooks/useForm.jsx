@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'preact/compat'
 import { useRef, useState } from 'preact/hooks'
-import { formValid } from '../components/Form/LoaderValid.js'
-import getValidate from '../components/Form/ValidForm.js'
+import { formValid, formValidAfter } from '../components/Form/LoaderValid.js'
+import getValidate, { asyncGetValidate } from '../components/Form/ValidForm.js'
 import { debounce, isDiff, setState } from '../helpers.js'
 import { Session } from '../core/Storage/index.js'
 
@@ -9,7 +9,8 @@ export default function useForm (props = {}) {
 	const { initial = {}, onSubmit } = props
 	const nameForm = props.name || ''
 
-	const validate = formValid[nameForm] || {};
+	const validate = formValid[nameForm] || {}
+	const validateAfter = formValidAfter[nameForm]
 
 	const [values, setValue] = useState(initial)
 	const [errors, setErrors] = useState({})
@@ -48,7 +49,7 @@ export default function useForm (props = {}) {
 			touched.current[name] = true
 
 			if (validate[name]) {
-				debounce(()=>{
+				debounce(() => {
 					const error = getValidate(value, validate[name], values)
 
 					if (errors[name] !== error) {
@@ -85,8 +86,23 @@ export default function useForm (props = {}) {
 
 		},
 	}
+	if (validateAfter) {
+		FormProps.onChange = (e) => {
+			const { name, value } = e.target
+			if (validateAfter[name]) {
+				debounce(async () => {
+					const error = await asyncGetValidate(value, validateAfter[name], values)
 
-	const isValid = getIsValid()
+					if (errors[name] !== error) {
+						setErrors(setState(name, error))
+					}
+				})()
+
+			}
+		}
+	}
+
+	const isValid = getIsValid();
 	const SubmitProps = {
 		disabled: !isValid || loading,
 		type: 'submit',

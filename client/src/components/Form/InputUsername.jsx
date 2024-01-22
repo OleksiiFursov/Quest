@@ -4,6 +4,7 @@ import {Person} from "@mui/icons-material";
 
 function InputUsername(props) {
     const {name = 'username', label = __('Login'), value, error, ...rest} = props;
+
     return (<Input
         label={label}
         startDecorator={<Person/>}

@@ -11,8 +11,9 @@ import Storage from '@/core/Storage/index.js'
 import { setCurrentUser } from '@/app/actions.js'
 
 const propsForm = {
-	name: 'login',
+	name: 'accountLogin',
 	onSubmit: async (values) => {
+
 		const [status, data] = await api.send('account/login', crop(values, ['username', 'password']))
 		if (status === 200) {
 			Storage.set('token', data.token)
@@ -28,7 +29,7 @@ function AccountLoginForm () {
 	const { FormProps, values, errors, SubmitProps } = useForm(propsForm);
 
 	return <form {...FormProps}>
-		<InputLogin value={values.username} error={errors.username} autoComplete="off"/>
+		<InputLogin value={values.username} error={errors.username} autofocus/>
 		<InputPassword value={values.password} error={errors.password}/>
 		<div className="flex-between">
 			<Link to="account/create">{__('Create account')}</Link>

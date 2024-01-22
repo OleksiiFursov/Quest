@@ -19,7 +19,10 @@ export const store = configureStore({
 });
 
 
-export const WSS = new WSSConnect({host: config.wss.host});
+export const WSS = new WSSConnect({
+    host: config.wss.host,
+    onError: console.log
+});
 window.WSS = WSS;
 
 

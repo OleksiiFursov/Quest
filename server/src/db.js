@@ -142,7 +142,7 @@ class QueryBuilder {
 	}
 
 	#addQuoteIfNeeded (value) {
-		if (value[0] === '`' && value[1] === '`' || !this.escape) {
+		if (value && value[0] === '`' && value[1] === '`' || !this.escape) {
 			return value.slice(2);
 		}
 		return  db.escape(value)

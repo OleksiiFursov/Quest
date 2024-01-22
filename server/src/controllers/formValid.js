@@ -1,6 +1,12 @@
+import Resp from '../helpers/Resp.mjs'
+import ModelUsers from '../model/users.mjs'
+
 export default {
-    accountCreate_username({value, values}){
-        return value === '123'
+    async accountCreate_username(context, {value, values}){
+        if(value && value.length > 3){
+            return Resp.success(await ModelUsers().has({ username: value}))
+        }
+        return Resp.success(true);
     }
 
 }

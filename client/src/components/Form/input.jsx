@@ -8,7 +8,7 @@ function Input(props) {
     return (<FormControl error={!!error}>
         <FormLabel>{label}</FormLabel>
         <_Input className={classNames(error && 'input-error', className)} {...rest}/>
-        <FormHelperText>{error || ''}&nbsp;</FormHelperText>
+        <FormHelperText dangerouslySetInnerHTML={{__html: error || '&nbsp;'}} />
     </FormControl>);
 
 }

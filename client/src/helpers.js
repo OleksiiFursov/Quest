@@ -17,7 +17,7 @@ export function ucFirst(word){
 
 export function crop(obj, keys){
     const res = {};
-    for(const key in keys){
+    for(const key of keys){
         res[key] = obj[key];
     }
     return res;
@@ -61,5 +61,19 @@ export function map(obj, call){
         res[key] = call(obj[key], key);
     }
     return res;
+}
+
+export function setObjectPath(obj, ...params){
+    const value = params.pop();
+    const property = params.pop();
+
+    let cur = obj;
+    for(const path of params){
+        if(!cur[path]){
+            cur[path] = {};
+        }
+        cur = cur[path];
+    }
+    cur[property] = value;
 }
 

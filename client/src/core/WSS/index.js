@@ -41,6 +41,9 @@ const connector = function (host, onOpen, onError, onClose, reconnect) {
 				store.dispatch(removeNotification('error-connect'))
 
 				if (req) {
+					if(!data.data){
+						data.data = [500, __("An error has occurred :(")]
+					}
 					req[0](data.data)
 					delete prom[data.id]
 					return

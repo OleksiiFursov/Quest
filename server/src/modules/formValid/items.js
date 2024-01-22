@@ -43,5 +43,5 @@ export const email = {
 
 export const phone = {
 	require: true,
-	pattern: [/^[012]$/, __('Login must contain A-Z, a-z, 0-9 and symbol _, - ')],
+	//pattern: [/^[012]$/, __('Login must contain A-Z, a-z, 0-9 and symbol _, - ')],
 }

@@ -3,6 +3,7 @@ import { dirname } from 'path'
 import { parse } from 'path'
 import { fileURLToPath } from 'url'
 import config from './config.js'
+import Resp from './helpers/Resp.mjs'
 
 export function deepClone (obj) {
 	const clObj = {}
@@ -101,7 +102,8 @@ export function getConfig (path, def = {}) {
 }
 
 export function error (msg) {
-	console.error(msg)
+	console.error(msg);
+	return Resp.error(msg);
 }
 
 export function getCurrentDirectory(path){
