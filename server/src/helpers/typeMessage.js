@@ -1,7 +1,8 @@
 import { parseJSON } from '@crossfox/utils'
 import { error, getConfig } from '../tools.js'
-import { decode, encode } from 'msgpack-lite';
+import { decode, encode, Codec} from 'tiny-msgpack';
 const type = getConfig('wss.type', 'msgpack');
+
 
 const typeMessage =  type === 'msgpack' ? {
 	encode(msg){

@@ -7,7 +7,7 @@ function AccountLoginPage() {
 
     }, []);
     return (<div className="account-login-form-wrap">
-        <H2>Sign in</H2>
+        <H2>Log in</H2>
         <AccountLoginForm/>
     </div>);
 }

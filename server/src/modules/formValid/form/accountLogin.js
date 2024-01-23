@@ -1,3 +1,3 @@
-import {username, password} from '../items.js';
+import {email, password} from '../items.js';
 
-export default {username, password}
+export default {email, password}

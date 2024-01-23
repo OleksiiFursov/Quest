@@ -12,12 +12,7 @@ function InputDate(props){
 	  label={label}
 	  error={error}
 	  value={value}
-	  slotProps={{
-		  input: {
-			  min: theDate(dayjs().subtract(100, 'year')),
-			  max: theDate(),
-		  },
-	  }}
+	  {...rest}
 	/>
 
 }

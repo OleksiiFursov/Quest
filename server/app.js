@@ -7,7 +7,7 @@ import { nanoid } from 'nanoid'
 import { controllersInit, controllersOn } from '#loader.js'
 import { deepClone, formatDate } from '#tools.js'
 import db from '#db.js'
-
+import "./test.js";
 let options = {}
 if (config.isSSL) {
     options = {

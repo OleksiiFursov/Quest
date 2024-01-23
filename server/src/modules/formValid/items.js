@@ -28,7 +28,7 @@ export const birthday = {
 	require: true,
 	check: [value => {
 		const d = dayjs().diff(dayjs(value), 'year')
-		return d >= -130 && d <= 0
+		return d >= -100 && d <= 0
 	}, __('')],
 }
 
@@ -38,7 +38,9 @@ export const gender = {
 }
 export const email = {
 	require: true,
-	pattern: [/^[012]$/, __('Login must contain A-Z, a-z, 0-9 and symbol _, - ')],
+	min: 3,
+	max: 120,
+	pattern: [/^\S+@\S+\.\S{2,}$/, __('Invalid email address')],
 }
 
 export const phone = {

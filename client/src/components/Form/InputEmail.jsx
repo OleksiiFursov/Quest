@@ -1,18 +1,19 @@
 import Input from "./input.jsx";
 import {memo} from "preact/compat";
-import {Person} from "@mui/icons-material";
+import {AlternateEmail} from "@mui/icons-material";
 
-function InputUsername(props) {
+function InputEmail(props) {
     const {name = 'email', label = __('Email'), value, error, ...rest} = props;
 
     return (<Input
         label={label}
-        startDecorator={<Person/>}
+        startDecorator={<AlternateEmail/>}
         name={name}
         error={error}
         value={value}
+        type="email"
         {...rest}
     />)
 }
 
-export default memo(InputUsername);
+export default memo(InputEmail);

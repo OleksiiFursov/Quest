@@ -380,36 +380,7 @@ global.lastQuery = lastQuery;
 const dateNow = time => '``NOW()'+ (time > 0 ? '+':'')+ time;
 export {build, createSchema, lastQuery, dateNow }
 
-// const suite = new Benchmark.Suite
-//
-// suite.add('String Concatenation', function () {
-//   let result = ''
-//   const a = 1, b = 2, c = 3
-//   for (let i = 0; i < 10000; i++) {
-//     result += 'so' + a + 'me ' + b + ' text' + c
-//   }
-// })
 
-// Используя массив
-// suite.add('String Concatenation2', function() {
-//     let result = '';
-//     const a = 1, b = 2, c = 3
-//     for (let i = 0; i < 10000; i++) {
-//         result += `so${a}me ${b} text${c}`;
-//     }
-// });
-//
-// // Запускаем бенчмарк
-// suite
-//     .on('cycle', function(event) {
-//         console.log(String(event.target));
-//     })
-//     .on('complete', function() {
-//         console.log('Fastest is ' + this.filter('fastest').map('name'));
-//     })
-//     .run({ 'async': true });
-
-//
 export default {
 	db, build, createSchema, historySQL,
 }

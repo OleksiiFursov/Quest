@@ -8,6 +8,7 @@ import { getConfig } from '../tools.js'
 import ModelUsersToken from "#model/usersToken.mjs";
 import ModelUsers from "#schemas/users.js";
 import FormValidUserLogin from "../modules/formValid/form/accountLogin.js"
+import FormValidUserCreate from "../modules/formValid/form/accountCreate.js"
 
 export default {
 	get (context, id) {
@@ -102,4 +103,14 @@ export default {
 			return this._loginAttempt(context, username,'Login or password is not correct')
 		}
 	},
+	create(context, values){
+		const {username, password, birthday, gender} = values;
+
+		for(const key of ['username', 'password', 'birthday', 'gender']){
+			let errorMessage = getValidate(values[key], FormValidUserCreate[key], values);
+			if(errorMessage){
+				return this._loginAttempt(context, username, key+': '+errorMessage);
+			}
+		}
+	}
 }

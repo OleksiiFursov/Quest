@@ -1,6 +1,6 @@
-import Input from './input.jsx'
+import dayjs from 'dayjs'
+import { theDate } from '../../core/Format/index.js'
 import { memo } from 'preact/compat'
-import { Person } from '@mui/icons-material'
 import InputDate from './InputDate.jsx'
 
 function InputBirthday (props) {
@@ -10,6 +10,12 @@ function InputBirthday (props) {
       label={label}
       value={value}
       erorr={error}
+	  slotProps={{
+		  input: {
+			  min: theDate(dayjs().subtract(100, 'year')),
+			  max: theDate(),
+		  },
+	  }}
       {...rest}
 	/>)
 }

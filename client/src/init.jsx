@@ -9,6 +9,7 @@ import LoginLayout from './layouts/login/index.jsx'
 import DefaultLayout from './layouts/default/index.jsx'
 import loaderCurrentUser from '@/app/loaderCurrentUser.js'
 import useLoader from '@/hooks/useLoader.js'
+import dayjs from 'dayjs';
 
 const Router = createRouter(routes)
 
@@ -22,6 +23,8 @@ export const userConfig = {
 };
 
 window.goTo = goTo;
+window.dayjs = dayjs;
+
 function Init() {
     const loading = useLoader([
         loaderMessage(),

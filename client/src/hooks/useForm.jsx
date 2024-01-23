@@ -10,7 +10,8 @@ export default function useForm (props = {}) {
 	const nameForm = props.name || ''
 
 	const validate = formValid[nameForm] || {}
-	const validateAfter = formValidAfter[nameForm]
+	const validateAfter = formValidAfter[nameForm] || {};
+	console.log(validate, validateAfter);
 
 	const [values, setValue] = useState(initial)
 	const [errors, setErrors] = useState({})
@@ -44,15 +45,14 @@ export default function useForm (props = {}) {
 	}
 
 	const FormProps = {
-		onInput: (e) => {
+		onInput: e => {
 			const { name, value } = e.target
-			touched.current[name] = true
 
 			if (validate[name]) {
 				debounce(() => {
 					const error = getValidate(value, validate[name], values)
 
-					if (errors[name] !== error) {
+					if (touched.current[name] && errors[name] !== error) {
 						setErrors(setState(name, error))
 					}
 				})()
@@ -64,7 +64,21 @@ export default function useForm (props = {}) {
 				Session.set('form-' + nameForm, values)
 			}
 		},
-		onSubmit: async (e) => {
+		onChange: e => {
+			const { name, value } = e.target
+			touched.current[name] = true
+			if (validateAfter[name]) {
+				debounce(async () => {
+					const error = await asyncGetValidate(value, validateAfter[name], values)
+
+					if (errors[name] !== error) {
+						setErrors(setState(name, error))
+					}
+				})()
+
+			}
+		},
+		onSubmit: async e => {
 			e.preventDefault()
 			const errs = {}
 			for (const key in validate) {
@@ -86,23 +100,8 @@ export default function useForm (props = {}) {
 
 		},
 	}
-	if (validateAfter) {
-		FormProps.onChange = (e) => {
-			const { name, value } = e.target
-			if (validateAfter[name]) {
-				debounce(async () => {
-					const error = await asyncGetValidate(value, validateAfter[name], values)
 
-					if (errors[name] !== error) {
-						setErrors(setState(name, error))
-					}
-				})()
-
-			}
-		}
-	}
-
-	const isValid = getIsValid();
+	const isValid = getIsValid()
 	const SubmitProps = {
 		disabled: !isValid || loading,
 		type: 'submit',

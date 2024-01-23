@@ -12,10 +12,13 @@
     "@google-cloud/recaptcha-enterprise": "^5.1.0",
     "bcrypt": "^5.1.1",
     "dayjs": "^1.11.10",
+    "json-joy": "^11.28.0",
     "msgpack-lite": "^0.1.26",
+    "msgpackr": "^1.10.1",
     "mysql2": "^3.7.0",
     "nanoid": "^5.0.4",
     "nodemailer": "^6.9.8",
+    "tiny-msgpack": "^2.2.0",
     "ws": "^8.16.0"
   },
   "imports": {

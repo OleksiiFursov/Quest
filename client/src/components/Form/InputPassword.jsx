@@ -3,6 +3,7 @@ import { memo } from 'preact/compat'
 import { Key } from '@mui/icons-material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
+import { passwordStrength } from 'check-password-strength'
 import { useState } from 'preact/hooks'
 
 function InputPassword (props) {
@@ -13,6 +14,7 @@ function InputPassword (props) {
 		className: 'cpt',
 	}
 
+	console.log(passwordStrength(value));
 	return (<Input
 	  startDecorator={<Key/>}
 	  name={name + (confirm?'2':'')}

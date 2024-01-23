@@ -18,6 +18,7 @@ export const store = configureStore({
         }),
 });
 
+export const {dispatch} = store;
 
 export const WSS = new WSSConnect({
     host: config.wss.host,

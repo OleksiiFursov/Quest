@@ -9,6 +9,7 @@ function AccountLoginPage() {
     return (<div className="account-create-form-wrap">
         <H2>{__('Create account')}</H2>
         <AccountCreateUser/>
+
     </div>);
 }
 
