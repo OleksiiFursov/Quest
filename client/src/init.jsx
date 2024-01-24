@@ -27,9 +27,9 @@ window.dayjs = dayjs;
 
 function Init() {
     const loading = useLoader([
-        loaderMessage(),
-        loaderFormValid(),
-        loaderCurrentUser(),
+        loaderMessage,
+        loaderFormValid,
+        loaderCurrentUser,
     ])
     return <>
         <NotificationList/>

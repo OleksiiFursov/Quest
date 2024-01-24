@@ -2,7 +2,6 @@ import config from '../../../config.js'
 
 let messages = [];
 export function loaderMessage(){
-
 }
 
 export default function Message(str, slug=null){

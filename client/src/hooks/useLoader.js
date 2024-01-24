@@ -5,7 +5,7 @@ export default function useLoader(calls){
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         (async () => {
-            await Promise.all(calls)
+            await Promise.all(calls.map(v=>v()))
             setLoading(false);
         })()
 
