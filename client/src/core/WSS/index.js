@@ -1,6 +1,7 @@
 import { merge } from 'lodash-es'
 import appState from '../../app/reducer.js'
 import notification from '../../components/Notification/index.jsx'
+import { decodeAdv } from '../../helpers.js'
 import { store } from '../../main.jsx'
 import typeMessage from '../typeMessage/index.js'
 
@@ -44,7 +45,7 @@ const connector = function (host, onOpen, onError, onClose, reconnect) {
 					if(!data.data){
 						data.data = [500, __("An error has occurred :(")]
 					}
-					req[0](data.data)
+					req[0](decodeAdv(data.data))
 					delete prom[data.id]
 					return
 				}

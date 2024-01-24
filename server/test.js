@@ -1,68 +1,36 @@
 import { getCurrentDirectory, importFolder } from '#tools.js'
-import { MsgPackEncoder } from 'json-joy/es6/json-pack/msgpack/MsgPackEncoder.js'
-import { MsgPackDecoder } from 'json-joy/es6/json-pack/msgpack/MsgPackDecoder.js'
+
 import { unpack, pack } from 'msgpackr'
 import { encode, decode } from 'msgpack-lite'
 import { encode as encode2, decode as decode2 } from 'tiny-msgpack'
-import Benchmark from 'benchmark'
+// import Benchmark from 'benchmark'
+//
+//
+//
+//
+//
+// const suite = new Benchmark.Suite
+//
+// let v = m.encode(encodeAdv(a));
+// console.log(1, v);
+// console.log(2, decodeAdv(d.read(v)));
+//
+// suite.add('variant #1', function () {
+// 	return decodeAdv(v)
+// })
+//
+// suite.add('variant #2', function () {
+// 	return decodeAdv2(v)
+// })
+// suite
+// .on('cycle', function (event) {
+// 	console.log(String(event.target))
+// })
+// .on('complete', function () {
+// 	console.log('Fastest is ' + this.filter('fastest').map('name'))
+// })
+// .run({ 'async': true })
 
-function sendNormalized (obj) {
-	for (const key in obj) {
-		if (typeof obj[key] === 'function') {
-			obj[key] = '<F>' + obj[key].toString()
-		} else if (obj[key] instanceof RegExp) {
-			obj[key] = '<R>' + obj[key].toString()
-		} else if (typeof obj[key] === 'object') {
-			sendNormalized(obj[key])
-		}
-	}
-	return obj
-}
-
-function sendNormalized2 (obj) {
-	for (const key in obj) {
-		const type = typeof obj[key]
-		if (type === 'function') {
-			obj[key] = '￯F' + obj[key]
-		} else if (type === 'object') {
-			if (obj[key] instanceof RegExp) {
-				obj[key] = '￯F' + obj[key]
-			} else {
-				sendNormalized2(obj[key])
-			}
-		}
-	}
-	return obj
-}
-
-const a = {
-	reg: /[a-z]/,
-	numb: 12,
-	str: 'String',
-	bool: true,
-	func: (a) => a ** 2,
-	arr: [1, 2, 3, 4],
-	test: { a: 1, b2: 22, reg: /a-z/, f2: (a) => a * 4 },
-}
-const m = new MsgPackEncoder()
-const d = new MsgPackDecoder()
-
-const suite = new Benchmark.Suite
-
-suite.add('variant #2', function () {
-	return sendNormalized2(a)
-})
-suite.add('variant #1', function () {
-	return sendNormalized(a)
-})
-suite
-.on('cycle', function (event) {
-	console.log(String(event.target))
-})
-.on('complete', function () {
-	console.log('Fastest is ' + this.filter('fastest').map('name'))
-})
-.run({ 'async': true })
 
 /*
 //JSON

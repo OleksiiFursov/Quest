@@ -3,7 +3,7 @@ import systemController from './controllers/system.js'
 import accountController from './controllers/account.js'
 import formValidController from "#controllers/formValid.js";
 import Resp from './helpers/Resp.mjs'
-import { error } from './tools.js'
+import { decodeAdv, error } from './tools.js'
 import typeMessage from './helpers/typeMessage.js';
 
 const controllers = { mainController, systemController, accountController, formValidController },
@@ -17,7 +17,7 @@ export const controllersInit = context => {
 	}
 }
 
-async function runController (context, controllerName, methodName, data = {}) {
+export async function runController (context, controllerName, methodName, data = {}) {
 	controllerName += 'Controller'
 	const controller = controllers[controllerName]
 
@@ -40,7 +40,8 @@ async function runController (context, controllerName, methodName, data = {}) {
 }
 
 export const controllersOn = async (context, message) => {
-	const { name, data } = typeMessage.decode(message)
+	let { name, data} = typeMessage.decode(message)
+	//data = decodeAdv(data)
 	if (!name) return this
 
 	context.config.isLog && context.notice(data)

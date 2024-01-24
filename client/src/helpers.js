@@ -77,3 +77,51 @@ export function setObjectPath(obj, ...params){
     cur[property] = value;
 }
 
+export function encodeAdv (obj) {
+    for (const key in obj) {
+        const item = obj[key]
+        const type = typeof item
+        if (type === 'function') {
+            obj[key] = '￯F' + item
+        } else if (type === 'object') {
+            if (item instanceof RegExp) {
+                if (item.flags) {
+                    obj[key] = '￯r' + item.source + '￯' + item.flags
+                }else{
+                    obj[key] = '￯R' + item.source
+                }
+
+            } else if (item instanceof Date) {
+                obj[key] = '￯D' + item.valueof()
+            } else {
+                encodeAdv(item)
+            }
+        }
+    }
+    return obj
+}
+
+export function decodeAdv (obj) {
+    for (const key in obj) {
+        let item = obj[key]
+        const type = typeof item
+        if (type === 'string') {
+            if (item[0] === '￯') {
+                const format = item[1]
+                item = item.slice(2)
+                if (format === 'F') {
+                    obj[key] = Function('return ' + item)()
+                } else if (format === 'R') {
+                    obj[key] = RegExp(item)
+                } else if (format === 'r') {
+                    obj[key] = RegExp(...item.split('￯'))
+                } else if (format === 'D') {
+                    obj[key] = new Date(item)
+                }
+            }
+        } else if (type === 'object') {
+            decodeAdv(item)
+        }
+    }
+    return obj
+}

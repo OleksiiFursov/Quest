@@ -1,20 +1,23 @@
 import { parseJSON } from '@crossfox/utils'
 import { error, getConfig } from '../tools.js'
-import { decode, encode, Codec} from 'tiny-msgpack';
+import { MsgPackEncoder } from 'json-joy/es6/json-pack/msgpack/MsgPackEncoder.js'
+import { MsgPackDecoder } from 'json-joy/es6/json-pack/msgpack/MsgPackDecoder.js'
 const type = getConfig('wss.type', 'msgpack');
 
+const m = new MsgPackEncoder()
+const d = new MsgPackDecoder()
 
 const typeMessage =  type === 'msgpack' ? {
 	encode(msg){
 		try{
-			return encode(msg)
+			return m.encode(msg)
 		}catch(e){
 			error('[typeMessage] Error encode msg.', [e, msg])
 		}
 	},
 	decode(msg){
 		try{
-			return decode(msg)
+			return d.read(msg)
 		}catch(e){
 			error('[typeMessage] Error decode msg.', [e, msg])
 		}

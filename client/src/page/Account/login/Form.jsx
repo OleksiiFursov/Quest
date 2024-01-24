@@ -33,7 +33,7 @@ function AccountLoginForm () {
 		<div className="flex-between">
 			<Link to="account/create">{__('Create account')}</Link>
 			<div className="flex-gap-1">
-				<Link to="account/reset">{__('Remind password')}</Link>
+				<Link to="account/reset">{__('Forgot password')}</Link>
 				<Button {...SubmitProps} />
 			</div>
 		</div>
