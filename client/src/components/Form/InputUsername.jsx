@@ -2,7 +2,7 @@ import Input from "./input.jsx";
 import {memo} from "preact/compat";
 import {Person} from "@mui/icons-material";
 
-function InputUsername(props) {
+function InputLogin(props) {
     const {name = 'email', label = __('Email'), value, error, ...rest} = props;
 
     return (<Input
@@ -15,4 +15,4 @@ function InputUsername(props) {
     />)
 }
 
-export default memo(InputUsername);
+export default memo(InputLogin);

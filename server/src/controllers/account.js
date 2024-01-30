@@ -3,12 +3,12 @@ import {dateNow} from '../db.js'
 import Resp from '../helpers/Resp.mjs'
 import { comparePasswords } from '../helpers/password.mjs'
 import ModuleAccount from '../modules/account.mjs'
-import getValidate from '../modules/formValid/formValid.js'
+import getValidate from '../formValid/formValid.js'
 import { getConfig } from '../tools.js'
 import ModelUsersToken from "#model/usersToken.mjs";
 import ModelUsers from "#schemas/users.js";
-import FormValidUserLogin from "../modules/formValid/form/accountLogin.js"
-import FormValidUserCreate from "../modules/formValid/form/accountCreate.js"
+import FormValidUserLogin from "../formValid/form/accountLogin.js"
+import FormValidUserCreate from "../formValid/form/accountCreate.js"
 
 export default {
 	get (context, id) {
@@ -105,6 +105,7 @@ export default {
 	},
 	create(context, values){
 		const {username, password, birthday, gender} = values;
+		console.log(values);
 
 		for(const key of ['username', 'password', 'birthday', 'gender']){
 			let errorMessage = getValidate(values[key], FormValidUserCreate[key], values);

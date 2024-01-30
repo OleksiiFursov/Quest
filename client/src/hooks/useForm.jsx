@@ -11,7 +11,6 @@ export default function useForm (props = {}) {
 
 	const validate = formValid[nameForm] || {}
 	const validateAfter = formValidAfter[nameForm] || {};
-	console.log(validate, validateAfter);
 
 	const [values, setValue] = useState(initial)
 	const [errors, setErrors] = useState({})

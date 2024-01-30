@@ -16,7 +16,7 @@ export default {
         return true;
     },
     async getFormValid() {
-        const imports = await importFolder(getCurrentDirectory()+'/modules/formValid/form', 'default');
+        const imports = await importFolder(getCurrentDirectory()+'/formValid/form', 'default');
         return Resp.success(sendNormalized(imports));
     }
 }

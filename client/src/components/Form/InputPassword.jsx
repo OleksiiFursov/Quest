@@ -3,28 +3,38 @@ import { memo } from 'preact/compat'
 import { Key } from '@mui/icons-material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import { passwordStrength } from 'check-password-strength'
 import { useState } from 'preact/hooks'
 
 function InputPassword (props) {
-	const { name = 'password', label = __('Password'), value, error, confirm} = props
+	const {
+		after,
+		name = 'password',
+		label = __('Password'),
+		value,
+		error,
+		confirm,
+	} = props
 	const [see, setSee] = useState(false)
 	const eyeProps = {
 		onClick: () => setSee(v => !v),
 		className: 'cpt',
 	}
 
-	console.log(passwordStrength(value));
-	return (<Input
-	  startDecorator={<Key/>}
-	  name={name + (confirm?'2':'')}
-	  type={see ? 'text' : 'password'}
-	  error={error}
-	  label={label}
-	  value={value}
-	  endDecorator={see ? <VisibilityOffIcon {...eyeProps}/> :
-		<VisibilityIcon {...eyeProps}/>}
-	/>)
+	return (
+	  <>
+		  <Input
+			startDecorator={<Key/>}
+			name={name + (confirm ? '2' : '')}
+			type={see ? 'text' : 'password'}
+			error={error}
+			label={label}
+			value={value}
+			endDecorator={see ? <VisibilityOffIcon {...eyeProps}/> :
+			  <VisibilityIcon {...eyeProps}/>}
+		  />
+		  {after}
+	  </>
+	)
 }
 
 export default memo(InputPassword)
