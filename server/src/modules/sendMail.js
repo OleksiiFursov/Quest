@@ -9,7 +9,6 @@ const transporter = nodemailer.createTransport({
 		pass: 'PMjUM$2r2V',
 	},
 })
-
 export default function sendMail (to, subject, text, from='system@crossfox.online') {
 	transporter.sendMail({
 		from,

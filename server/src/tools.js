@@ -125,7 +125,7 @@ export async function importFolder (pathFolder, method) {
 		if(method){
 			imp = imp[method];
 		}
-		filesData[fileName] = imp// Пример чтения содержимого файла
+		filesData[fileName] = imp
 	}
 	return filesData
 

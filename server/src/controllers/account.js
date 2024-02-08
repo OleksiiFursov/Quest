@@ -80,8 +80,6 @@ export default {
 			return this._loginAttempt(context, username,'Login or password is not correct')
 		}
 
-
-
 		if (await comparePasswords(password, userCurrent.password)) {
 			context.state.user_id = userCurrent.id;
 
